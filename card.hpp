@@ -19,6 +19,7 @@ public:
 	static constexpr float CARD_HOVER_MULTIPLIER = 1.1f;
 	static constexpr int CARDS_PER_ROW = 4;
 	static constexpr int CARDS_PER_COLUMN = 4;
+	static constexpr int CARDS_TOTAL = CARDS_PER_COLUMN * CARDS_PER_ROW;
 private:
 	const sf::Texture& m_unflippedTex;
 	const sf::Texture& m_flippedTex;

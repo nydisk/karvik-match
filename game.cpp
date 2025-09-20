@@ -5,21 +5,15 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
-#include <queue>
-#include <random>
 #include <string>
 #include <math.h>
 #include <SFML/Graphics.hpp>
-#include <SFML/Audio.hpp>
+#include "gameScene.hpp"
 #include "registry.hpp"
 #include "settings.hpp"
-#include "revealer.hpp"
 #include "timesnap.hpp"
 #include "manifest.hpp"
-#include "card.hpp"
-
-std::random_device rd;
-std::mt19937 gen(rd());
+#include "scenery.hpp"
 
 std::vector<std::string> loadedCards{};
 
@@ -58,23 +52,16 @@ static void loadRegistry() {
 		assetLoadError("hover", "/data/sound/hover.ogg");
 	}
 }
-static void populateGameCards(std::vector<std::string>& target) {
-	const int uniqueCards = (Card::CARDS_PER_COLUMN * Card::CARDS_PER_ROW) / 2;
-	std::vector<std::string> copyOfCards = loadedCards;
-	for (int i = 0; i < uniqueCards; i++) {
-		std::uniform_int_distribution<int> dist{ 0,static_cast<int>(copyOfCards.size()) - 1 };
-		size_t index = dist(gen);
 
-		target.emplace_back(copyOfCards[index]);
-		target.emplace_back(copyOfCards[index]);
-
-		copyOfCards.erase(copyOfCards.begin() + index);
-	}
-	std::shuffle(target.begin(), target.end(), gen);
+static void loadScenery() {
+	Scenery::registerFactory(SceneId::Game, []() { return std::make_unique<GameScene>(loadedCards); });
 }
 
 int main(){
 	loadRegistry();
+	loadScenery();
+
+	Scenery::load(SceneId::Game);
 
 	sf::RenderWindow window(sf::VideoMode({ static_cast<unsigned int>(Settings::VIRTUAL_WIDTH), static_cast<unsigned int>(Settings::VIRTUAL_HEIGHT) }), ":3");
 	
@@ -90,29 +77,7 @@ int main(){
 
 	sf::Clock deltaClock{};
 	sf::Clock clock{};
-
-	std::vector<std::string> cardIds{};
-	populateGameCards(cardIds);
-
-	if (Card::CARDS_PER_COLUMN * Card::CARDS_PER_ROW != static_cast<int>(cardIds.size())) {
-		std::cerr << "Card amount mismatch" << std::endl;
-		std::cerr << " * expected: " << Card::CARDS_PER_COLUMN * Card::CARDS_PER_ROW << std::endl;
-		std::cerr << " * got: " << cardIds.size() << std::endl;
-		return -1;
-	}
-
-	Card* gameCards[Card::CARDS_PER_COLUMN][Card::CARDS_PER_ROW]{};
-	for (int y = 0; y < Card::CARDS_PER_COLUMN; y++) {
-		for (int x = 0; x < Card::CARDS_PER_ROW; x++) {
-			gameCards[y][x] = new Card(cardIds[y * Card::CARDS_PER_ROW + x], {x,y});
-		}
-	}
-
-	Revealer revealer{};
 	TimeSnap timeSnap{};
-
-	int givenPairs = (Card::CARDS_PER_COLUMN * Card::CARDS_PER_ROW) / 2;
-	int mismatched = 0;
 
 	while (window.isOpen()) {
 		timeSnap.delta = deltaClock.restart().asSeconds();
@@ -120,68 +85,13 @@ int main(){
 
 		while (const auto& ev = window.pollEvent()) {
 			if (ev->is<sf::Event::Closed>()) window.close();
-			if (const auto mbev = ev->getIf<sf::Event::MouseButtonPressed>()) {
-				if (mbev->button != sf::Mouse::Button::Left || !window.hasFocus()) break;
-
-				for (int y = 0; y < Card::CARDS_PER_COLUMN; y++) {
-					for (int x = 0; x < Card::CARDS_PER_ROW; x++) {
-						Card* c = gameCards[y][x];
-						if (c == nullptr) continue;
-						if (!c->isInteractable()) continue;
-						if (!c->hovered()) continue;
-						
-						auto result = revealer.reveal(c);
-						if (result == RevealResult::Mismatched) mismatched++;
-						else if (result == RevealResult::Matched) SFX::play("matched");
-					}
-				}
-			}
+			Scenery::active()->onSFMLEvent(ev);
 		}
 
-		if (revealer.cardsRevealed() == Card::CARDS_PER_COLUMN * Card::CARDS_PER_ROW) {
-			window.close();
-			float rawEfficiency = (static_cast<float>(givenPairs) / static_cast<float>(givenPairs + mismatched)) * 100;
-			float grynbergianEfficiency = ((static_cast<float>(givenPairs) * 1.75f) / static_cast<float>(givenPairs + mismatched)) * 100;
-			
-			std::ostringstream oss{};
-			oss.precision(2);
-			oss << "Raw Efficiency: " << std::fixed << rawEfficiency << "%\n"
-				<< "Grynbergian Efficiency: " << std::fixed << grynbergianEfficiency << "%";
-
-
-			SFX::play("max_win");
-
-			MessageBoxA(nullptr, std::string(
-				"MAX WIN!\n\nMinimal attempts: " + std::to_string(givenPairs) + " | " + std::to_string(static_cast<int>(static_cast<float>(givenPairs) * 1.75f)) +
-				"\nAttempts: " + std::to_string(givenPairs + mismatched)
-				+ "\n\n" + oss.str()
-			).c_str(), "karvikmatch", MB_OK | MB_ICONINFORMATION);
-		}
-		
-		for (int y = 0; y < Card::CARDS_PER_COLUMN; y++) {
-			for (int x = 0; x < Card::CARDS_PER_ROW; x++) {
-				if (gameCards[y][x] == nullptr) continue;
-				gameCards[y][x]->update(window.mapPixelToCoords(sf::Mouse::getPosition(window)), timeSnap);
-			}
-		}
+		Scenery::active()->update(window, timeSnap);
 
 		window.clear(sf::Color::Black);
-
-		for (int y = 0; y < Card::CARDS_PER_COLUMN; y++) {
-			for (int x = 0; x < Card::CARDS_PER_ROW; x++) {
-				if (gameCards[y][x] == nullptr) continue;
-				gameCards[y][x]->draw(window);
-			}
-		}
-
+		Scenery::active()->draw(window, timeSnap);
 		window.display();
 	}
-
-	// free the generated stuff
-	for (int y = 0; y < Card::CARDS_PER_COLUMN; y++) {
-		for (int x = 0; x < Card::CARDS_PER_ROW; x++) {
-			delete gameCards[y][x];
-		}
-	}
-
 }

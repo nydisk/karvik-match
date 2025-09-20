@@ -12,7 +12,7 @@ public:
 	}
 	inline static void registerFactory(const SceneId id, const std::function<std::unique_ptr<Scene>()>& factory) {
 		m_scenes[id] = factory;
-		std::cout << "Registered scene " << static_cast<int>(id) << std::endl;
+		std::cout << "Registered scene factory " << static_cast<int>(id) << std::endl;
 	}
 	inline static void load(const SceneId id) {
 		if (m_activeScene) {
@@ -26,5 +26,6 @@ public:
 			throw std::runtime_error("no scene registered");
 		}
 		m_activeScene = m_scenes[id]();
+		m_activeScene->onLoad();
 	}
 };

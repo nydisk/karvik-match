@@ -140,6 +140,7 @@
     <ClInclude Include="mathhelper.hpp" />
     <ClInclude Include="registry.hpp" />
     <ClInclude Include="revealer.hpp" />
+    <ClInclude Include="rng.hpp" />
     <ClInclude Include="scene.hpp" />
     <ClInclude Include="scenery.hpp" />
     <ClInclude Include="settings.hpp" />
