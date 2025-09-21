@@ -1,0 +1,17 @@
+# card manifest file thingamabob
+#
+# all resolutions can work, however an aspect ratio of 2/3 would be ideal.
+# this is mainly to prevent stretching.
+# 
+# some examples are: 16x24, 32x48, 64x96, 96x144, 128x192, ...
+#
+# format: tx <identifier> <(./data/cards/)filename>
+#
+tx  karvik1  karvik1.png
+tx  karvik2  karvik2.png
+tx  karvik3  karvik3.png
+tx  karvik4  karvik4.png
+tx  cuh      cuh.png
+tx  melon    melon.png
+tx  alien1   alien1.png
+tx  alien2   alien2.png
