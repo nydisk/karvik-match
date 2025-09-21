@@ -17,6 +17,7 @@ public:
 	static constexpr float CARD_DISAPPEAR_TIME = 0.9f;
 	static constexpr float CARD_DISAPPEAR_DELAY = 0.2f;
 	static constexpr float CARD_HOVER_MULTIPLIER = 1.1f;
+	static constexpr float CARD_TOTAL_DISAPPEAR_DELAY = CARD_FLIP_TIME + CARD_DISAPPEAR_DELAY;
 	static constexpr int CARDS_PER_ROW = 4;
 	static constexpr int CARDS_PER_COLUMN = 4;
 	static constexpr int CARDS_TOTAL = CARDS_PER_COLUMN * CARDS_PER_ROW;

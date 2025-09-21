@@ -47,7 +47,7 @@ void Card::disappear() {
 	m_shouldBeDisappearing = false;
 
 	// account for incomplete flip time at the moment of call
-	m_disappearTimer = CARD_FLIP_TIME + CARD_DISAPPEAR_DELAY;
+	m_disappearTimer = CARD_TOTAL_DISAPPEAR_DELAY;
 }
 
 bool Card::isInteractable() const {

@@ -1,6 +1,6 @@
 #pragma once
-#include "card.hpp"
 #include <array>
+#include "card.hpp"
 #include "sfx.hpp"
 enum class RevealState {
 	First,

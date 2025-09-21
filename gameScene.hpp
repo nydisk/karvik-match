@@ -9,9 +9,13 @@ class GameScene : public Scene {
 	std::vector<std::string> m_chosenCards{};
 	Card* m_gameCards[Card::CARDS_PER_COLUMN][Card::CARDS_PER_ROW]{};
 	Revealer m_revealer{};
+	
 	int m_mismatched{};
+	
 	bool m_gameOver = false;
-
+	bool m_cardAnimationsFinished = false;
+	float m_gameOverDelayTimer = 0;
+	
 	void populateGameCards(const std::vector<std::string>& loaded) {
 		const int uniqueCards = (Card::CARDS_PER_COLUMN * Card::CARDS_PER_ROW) / 2;
 		std::vector<std::string> copyOfCards = loaded;
@@ -39,12 +43,18 @@ class GameScene : public Scene {
 			}
 		}
 	}
+	void triggerGameOver() {
+		m_gameOver = true;
+		m_gameOverDelayTimer = Card::CARD_TOTAL_DISAPPEAR_DELAY + Card::CARD_DISAPPEAR_TIME;
+		m_cardAnimationsFinished = false;
+	}
 	void gameOver() const {
 		constexpr int givenPairs = Card::CARDS_TOTAL / 2;
 		float rawEfficiency = (static_cast<float>(givenPairs) / static_cast<float>(givenPairs + m_mismatched)) * 100;
 		float grynbergianEfficiency = ((static_cast<float>(givenPairs) * 1.75f) / static_cast<float>(givenPairs + m_mismatched)) * 100;
 
 		std::ostringstream oss{};
+
 		oss.precision(2);
 		oss << "Raw Efficiency: " << std::fixed << rawEfficiency << "%\n"
 			<< "Grynbergian Efficiency: " << std::fixed << grynbergianEfficiency << "%";
@@ -65,8 +75,15 @@ public:
 	}
 	void update(sf::RenderWindow& window, const TimeSnap& time) override {
 		if (m_revealer.cardsRevealed() == Card::CARDS_TOTAL && !m_gameOver) {
-			m_gameOver = true;
-			gameOver();
+			triggerGameOver();
+		}
+
+		if (m_gameOver && !m_cardAnimationsFinished) {
+			m_gameOverDelayTimer -= time.delta;
+			if (m_gameOverDelayTimer <= 0.0F) {
+				m_cardAnimationsFinished = true;
+				gameOver();
+			}
 		}
 
 		for (int y = 0; y < Card::CARDS_PER_COLUMN; y++) {
