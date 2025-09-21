@@ -10,7 +10,7 @@ enum class TransitionState {
 };
 class Transition {
 public:
-	inline static constexpr float FADE_TIME = 1.3f;
+	inline static constexpr float FADE_TIME = 2.8f;
 private:
 	inline static float m_timer = 0.0f;
 	inline static float m_alpha = 0.0f;

@@ -16,6 +16,7 @@ private:
 	inline static std::unordered_map<std::string, std::unique_ptr<sf::Texture>> m_tex{};
 	inline static std::unordered_map<std::string, std::unique_ptr<sf::Sound>> m_snd{};
 	inline static std::vector<std::unique_ptr<sf::SoundBuffer>> m_sndbf{};
+	inline static std::unordered_map<std::string, std::unique_ptr<sf::Music>> m_msc{};
 	inline static std::unique_ptr<sf::Shader> m_globalPosterizationShader{};
 public:
 	[[nodiscard]] inline static const sf::Shader& getGlobalPosterizationShader() {
@@ -41,6 +42,19 @@ public:
 		return true;
 	}
 
+	[[nodiscard]] inline static sf::Music& getMusic(const std::string& id) {
+		auto it = m_msc.find(id);
+		if (it == m_msc.end()) throw std::out_of_range("msc not found: " + id);
+		return *(it->second);
+	}
+	[[nodiscard]] inline static bool loadMusic(const std::string& filename, const std::string& id) {
+		std::unique_ptr<sf::Music> msc = std::make_unique<sf::Music>();
+		if (!msc->openFromFile(filename)) return false;
+		m_msc[id] = std::move(msc);
+		std::cout << "loaded music: '" << id << "' @ " << filename << std::endl;
+		return true;
+	}
+
 	[[nodiscard]] inline static sf::Sound& getSound(const std::string& id) {
 		auto it = m_snd.find(id);
 		if (it == m_snd.end()) throw std::out_of_range("snd not found: " + id);
@@ -61,6 +75,7 @@ public:
 		m_tex.clear();
 		m_snd.clear();
 		m_sndbf.clear();
+		m_msc.clear();
 		m_globalPosterizationShader.reset();
 	}
 };

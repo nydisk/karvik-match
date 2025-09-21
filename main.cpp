@@ -8,6 +8,7 @@
 #include <string>
 #include <math.h>
 #include <SFML/Graphics.hpp>
+#include "splashScene.hpp"
 #include "transition.hpp"
 #include "gameScene.hpp"
 #include "registry.hpp"
@@ -34,6 +35,10 @@ static void loadRegistry() {
 	if (!Registry::loadTexture("./data/card_back.png", "card_back")) {
 		assetLoadError("card_back", "/data/card_back.png");
 	}
+
+	if (!Registry::loadTexture("./data/splash.png", "splash")) {
+		assetLoadError("splash", "/data/splash.png");
+	}
 	
 	const auto cardFronts = Manifest::readManifest("./data/cards.txt");
 	for (const auto& def : cardFronts) {
@@ -52,6 +57,13 @@ static void loadRegistry() {
 	if (!Registry::loadSound("./data/sound/hover.ogg", "hover")) {
 		assetLoadError("hover", "/data/sound/hover.ogg");
 	}
+	if (!Registry::loadSound("./data/sound/splash.ogg", "splashfx")) {
+		assetLoadError("splashfx", "/data/sound/splash.ogg");
+	}
+
+	if (!Registry::loadMusic("./data/sound/katamari.ogg", "katamari")) {
+		assetLoadError("katamari", "/data/sound/katamari.ogg");
+	}
 
 	if (!Registry::loadGlobalPosterizationShader("./data/posterize.frag")) {
 		assetLoadError("globalPosterizationShader", "/data/posterize.frag");
@@ -60,6 +72,7 @@ static void loadRegistry() {
 
 static void loadScenery() {
 	Scenery::registerFactory(SceneId::Game, []() { return std::make_unique<GameScene>(loadedCards); });
+	Scenery::registerFactory(SceneId::Splash, []() { return std::make_unique<SplashScene>(); });
 }
 
 int main(){
@@ -71,7 +84,7 @@ int main(){
 	sf::RectangleShape renderShape({ static_cast<float>(window.getSize().x), static_cast<float>(window.getSize().y)});
 
 	Transition::init(window);
-	Scenery::load(SceneId::Game);
+	Scenery::load(SceneId::Splash);
 
 	window.setSize({
 		static_cast<unsigned int>(Settings::VIRTUAL_WIDTH * Settings::WINDOW_MULTIPLIER),

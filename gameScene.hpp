@@ -1,6 +1,7 @@
 #pragma once
 #include "scenery.hpp"
 #include "revealer.hpp"
+#include "registry.hpp"
 #include "scene.hpp"
 #include "card.hpp"
 #include "rng.hpp"
@@ -114,6 +115,10 @@ public:
 				m_gameCards[y][x] = new Card(m_chosenCards[y * Card::CARDS_PER_ROW + x], { x,y });
 			}
 		}
+
+		Registry::getMusic("katamari").setLooping(true);
+		Registry::getMusic("katamari").play();
+
 		Scene::onLoad();
 	}
 	void onUnload() override {
