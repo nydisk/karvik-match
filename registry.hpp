@@ -11,7 +11,7 @@
 
 class Registry {
 public:
-	inline static constexpr int POSTERIZATION_LEVELS = 64;
+	inline static constexpr int POSTERIZATION_LEVELS = 96;
 private:
 	inline static std::unordered_map<std::string, std::unique_ptr<sf::Texture>> m_tex{};
 	inline static std::unordered_map<std::string, std::unique_ptr<sf::Sound>> m_snd{};

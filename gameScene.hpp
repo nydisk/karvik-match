@@ -65,6 +65,7 @@ class GameScene : public Scene {
 			"MAX WIN!\n\nMinimal attempts: " + std::to_string(givenPairs) + " | " + std::to_string(static_cast<int>(static_cast<float>(givenPairs) * 1.75f)) +
 			"\nAttempts: " + std::to_string(givenPairs + m_mismatched)
 			+ "\n\n" + oss.str()
+			+ (grynbergianEfficiency >= 100.0F ? "\n\nGet a life holy" : "")
 		).c_str(), "karvikmatch", MB_OK | MB_ICONINFORMATION);
 
 		Scenery::load(SceneId::Game); // automatically restart for now
@@ -113,6 +114,7 @@ public:
 				m_gameCards[y][x] = new Card(m_chosenCards[y * Card::CARDS_PER_ROW + x], { x,y });
 			}
 		}
+		Scene::onLoad();
 	}
 	void onUnload() override {
 		for (int y = 0; y < Card::CARDS_PER_COLUMN; y++) {
@@ -120,6 +122,7 @@ public:
 				delete m_gameCards[y][x];
 			}
 		}
+		Scene::onUnload();
 	}
 	void onSFMLEvent(const std::optional<sf::Event>& ev) override {
 		if (m_gameOver) return;

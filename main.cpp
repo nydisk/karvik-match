@@ -8,6 +8,7 @@
 #include <string>
 #include <math.h>
 #include <SFML/Graphics.hpp>
+#include "transition.hpp"
 #include "gameScene.hpp"
 #include "registry.hpp"
 #include "settings.hpp"
@@ -65,11 +66,12 @@ int main(){
 	loadRegistry();
 	loadScenery();
 
-	Scenery::load(SceneId::Game);
-
 	sf::RenderWindow window(sf::VideoMode({ static_cast<unsigned int>(Settings::VIRTUAL_WIDTH), static_cast<unsigned int>(Settings::VIRTUAL_HEIGHT) }), ":3");
 	sf::RenderTexture renderTarget(window.getSize());
 	sf::RectangleShape renderShape({ static_cast<float>(window.getSize().x), static_cast<float>(window.getSize().y)});
+
+	Transition::init(window);
+	Scenery::load(SceneId::Game);
 
 	window.setSize({
 		static_cast<unsigned int>(Settings::VIRTUAL_WIDTH * Settings::WINDOW_MULTIPLIER),
@@ -97,9 +99,11 @@ int main(){
 		}
 
 		Scenery::active()->update(renderTarget, window, timeSnap);
+		Transition::update(timeSnap);
 
 		renderTarget.clear(sf::Color::Black);
 		Scenery::active()->draw(renderTarget, window, timeSnap);
+		Transition::post_draw(renderTarget); // run post draw (transition)
 		renderTarget.display();
 
 		window.clear(sf::Color::Black);

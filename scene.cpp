@@ -1,5 +1,4 @@
 #include "scene.hpp"
-
 Scene::Scene(const SceneId id) : m_id(id) {}
 
 void Scene::onLoad() {
