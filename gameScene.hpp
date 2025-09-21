@@ -73,7 +73,7 @@ public:
 	GameScene(const std::vector<std::string>& loadedCards) : Scene(SceneId::Game) {
 		populateGameCards(loadedCards);
 	}
-	void update(sf::RenderWindow& window, const TimeSnap& time) override {
+	void update(sf::RenderTarget& renderTarget, sf::RenderWindow& window, const TimeSnap& time) override {
 		if (m_revealer.cardsRevealed() == Card::CARDS_TOTAL && !m_gameOver) {
 			triggerGameOver();
 		}
@@ -93,11 +93,11 @@ public:
 			}
 		}
 	}
-	void draw(sf::RenderWindow& window, const TimeSnap& time) override {
+	void draw(sf::RenderTarget& renderTarget, sf::RenderWindow& window, const TimeSnap& time) override {
 		for (int y = 0; y < Card::CARDS_PER_COLUMN; y++) {
 			for (int x = 0; x < Card::CARDS_PER_ROW; x++) {
 				if (m_gameCards[y][x] == nullptr) continue;
-				m_gameCards[y][x]->draw(window);
+				m_gameCards[y][x]->draw(renderTarget);
 			}
 		}
 	}

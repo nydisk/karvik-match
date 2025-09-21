@@ -51,6 +51,10 @@ static void loadRegistry() {
 	if (!Registry::loadSound("./data/sound/hover.ogg", "hover")) {
 		assetLoadError("hover", "/data/sound/hover.ogg");
 	}
+
+	if (!Registry::loadGlobalPosterizationShader("./data/posterize.frag")) {
+		assetLoadError("globalPosterizationShader", "/data/posterize.frag");
+	}
 }
 
 static void loadScenery() {
@@ -64,7 +68,9 @@ int main(){
 	Scenery::load(SceneId::Game);
 
 	sf::RenderWindow window(sf::VideoMode({ static_cast<unsigned int>(Settings::VIRTUAL_WIDTH), static_cast<unsigned int>(Settings::VIRTUAL_HEIGHT) }), ":3");
-	
+	sf::RenderTexture renderTarget(window.getSize());
+	sf::RectangleShape renderShape({ static_cast<float>(window.getSize().x), static_cast<float>(window.getSize().y)});
+
 	window.setSize({
 		static_cast<unsigned int>(Settings::VIRTUAL_WIDTH * Settings::WINDOW_MULTIPLIER),
 		static_cast<unsigned int>(Settings::VIRTUAL_HEIGHT * Settings::WINDOW_MULTIPLIER)
@@ -78,20 +84,28 @@ int main(){
 	sf::Clock deltaClock{};
 	sf::Clock clock{};
 	TimeSnap timeSnap{};
-
 	while (window.isOpen()) {
 		timeSnap.delta = deltaClock.restart().asSeconds();
 		timeSnap.time = clock.getElapsedTime().asSeconds();
 
 		while (const auto& ev = window.pollEvent()) {
-			if (ev->is<sf::Event::Closed>()) window.close();
+			if (ev->is<sf::Event::Closed>()) {
+				renderShape.setTexture(nullptr);
+				window.close();
+			}
 			Scenery::active()->onSFMLEvent(ev);
 		}
 
-		Scenery::active()->update(window, timeSnap);
+		Scenery::active()->update(renderTarget, window, timeSnap);
+
+		renderTarget.clear(sf::Color::Black);
+		Scenery::active()->draw(renderTarget, window, timeSnap);
+		renderTarget.display();
 
 		window.clear(sf::Color::Black);
-		Scenery::active()->draw(window, timeSnap);
+		renderShape.setTexture(&renderTarget.getTexture());
+		window.draw(renderShape, sf::RenderStates{&Registry::getGlobalPosterizationShader()});
 		window.display();
 	}
+	Registry::deathAndDestruction();
 }

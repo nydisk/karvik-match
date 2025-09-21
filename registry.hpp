@@ -6,13 +6,28 @@
 #include <memory>
 #include <algorithm>
 #include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/Shader.hpp>
 #include <SFML/Audio/SoundBuffer.hpp>
 
 class Registry {
+public:
+	inline static constexpr int POSTERIZATION_LEVELS = 64;
+private:
 	inline static std::unordered_map<std::string, std::unique_ptr<sf::Texture>> m_tex{};
 	inline static std::unordered_map<std::string, std::unique_ptr<sf::Sound>> m_snd{};
 	inline static std::vector<std::unique_ptr<sf::SoundBuffer>> m_sndbf{};
+	inline static std::unique_ptr<sf::Shader> m_globalPosterizationShader{};
 public:
+	[[nodiscard]] inline static const sf::Shader& getGlobalPosterizationShader() {
+		return *m_globalPosterizationShader;
+	}
+	[[nodiscard]] inline static const bool loadGlobalPosterizationShader(const std::string& path) {
+		m_globalPosterizationShader = std::make_unique<sf::Shader>();
+		if (!m_globalPosterizationShader->loadFromFile(path, sf::Shader::Type::Fragment)) return false;
+		m_globalPosterizationShader->setUniform("levels", POSTERIZATION_LEVELS);
+		return true;
+	}
+
 	[[nodiscard]] inline static const sf::Texture& getTexture(const std::string& id) {
 		auto it = m_tex.find(id);
 		if (it == m_tex.end()) throw std::out_of_range("tex not found: " + id);
@@ -41,5 +56,11 @@ public:
 
 		std::cout << "loaded sound: '" << id << "' @ " << filename << std::endl;
 		return true;
+	}
+	inline static void deathAndDestruction() {
+		m_tex.clear();
+		m_snd.clear();
+		m_sndbf.clear();
+		m_globalPosterizationShader.reset();
 	}
 };
