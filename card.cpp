@@ -33,6 +33,8 @@ void Card::updateTexture() {
 Card::Card(const std::string& id, const sf::Vector2i& gridPos) : m_unflippedTex(Registry::getTexture("card_back")), m_flippedTex(Registry::getTexture(id)), m_id(id) {
 	static_assert((CARDS_PER_ROW * CARDS_PER_COLUMN) % 2 == 0, "Total card count must be divisible by 2");
 
+	m_gridPos = gridPos;
+
 	m_shape = sf::RectangleShape({ CARD_WIDTH,CARD_HEIGHT });
 	m_shape.setOrigin({CARD_WIDTH/2,CARD_HEIGHT/2});
 
@@ -40,6 +42,14 @@ Card::Card(const std::string& id, const sf::Vector2i& gridPos) : m_unflippedTex(
 	m_shape.setPosition(m_pos);
 
 	updateTexture();
+}
+
+[[nodiscard]] const sf::Vector2i& Card::gridPos() const {
+	return m_gridPos;
+}
+
+[[nodiscard]] int Card::gridIndex() const {
+	return m_gridPos.x + Card::CARDS_PER_ROW * m_gridPos.y;
 }
 
 void Card::disappear() {

@@ -2,6 +2,7 @@
 #include <array>
 #include "card.hpp"
 #include "sfx.hpp"
+#include "stats.hpp"
 enum class RevealState {
 	First,
 	Second,
@@ -37,6 +38,8 @@ public:
 	[[nodiscard]] RevealResult reveal(Card* c) {
 		if (isRevealed(c)) return RevealResult::None; 
 
+		Statistics::flipped(c);
+
 		switch (m_state) {
 		case RevealState::First:
 			m_revealed[0] = c;
@@ -49,14 +52,17 @@ public:
 			if (m_revealed[0]->is(m_revealed[1])) {
 				m_revealed[0]->disappear();
 				m_revealed[1]->disappear();
+				Statistics::match(m_revealed[0], m_revealed[1]);
 
 				m_cardsRevealed += 2;
 				resetMemory();
 				m_state = RevealState::First;
 
+
 				return RevealResult::Matched;
 			}
 			else {
+				Statistics::mismatch(m_revealed[0], m_revealed[1]);
 				m_state = RevealState::Checking;
 				return RevealResult::Mismatched;
 			}

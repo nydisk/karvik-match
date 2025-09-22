@@ -27,6 +27,7 @@ private:
 	
 	std::string m_id;
 	sf::Vector2f m_pos;
+	sf::Vector2i m_gridPos;
 	sf::RectangleShape m_shape;
 	
 	bool m_active = true;
@@ -60,7 +61,9 @@ public:
 	void hide();
 	void draw(sf::RenderTarget& target) const;
 	void update(const sf::Vector2f& mousePos, const TimeSnap& time);
+	[[nodiscard]] const sf::Vector2i& gridPos() const;
 	[[nodiscard]] bool isInteractable() const;
 	[[nodiscard]] bool is(const Card* other) const;
 	[[nodiscard]] bool hovered() const;
+	[[nodiscard]] int gridIndex() const;
 };

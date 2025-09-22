@@ -2,6 +2,7 @@
 #include "scenery.hpp"
 #include "revealer.hpp"
 #include "registry.hpp"
+#include "stats.hpp"
 #include "scene.hpp"
 #include "card.hpp"
 #include "rng.hpp"
@@ -13,8 +14,6 @@ class GameScene : public Scene {
 	Revealer m_revealer{};
 
 	sf::Text m_nowPlayingText{Registry::getFont(), "nothing", 14u};
-	
-	int m_mismatched{};
 	
 	bool m_gameOver = false;
 	bool m_cardAnimationsFinished = false;
@@ -42,8 +41,7 @@ class GameScene : public Scene {
 				if (!c->hovered()) continue;
 
 				auto result = m_revealer.reveal(c);
-				if (result == RevealResult::Mismatched) m_mismatched++;
-				else if (result == RevealResult::Matched) SFX::play("matched");
+				if (result == RevealResult::Matched) SFX::play("matched");
 			}
 		}
 	}
@@ -53,25 +51,23 @@ class GameScene : public Scene {
 		m_cardAnimationsFinished = false;
 	}
 	void gameOver() const {
-		constexpr int givenPairs = Card::CARDS_TOTAL / 2;
-		float rawEfficiency = (static_cast<float>(givenPairs) / static_cast<float>(givenPairs + m_mismatched)) * 100;
-		float grynbergianEfficiency = ((static_cast<float>(givenPairs) * 1.75f) / static_cast<float>(givenPairs + m_mismatched)) * 100;
-
 		std::ostringstream oss{};
 
 		oss.precision(2);
-		oss << "Raw Efficiency: " << std::fixed << rawEfficiency << "%\n"
-			<< "Grynbergian Efficiency: " << std::fixed << grynbergianEfficiency << "%";
+		oss << "Raw Efficiency: " << std::fixed << Statistics::rawEfficiency() << "%\n"
+			<< "Grynbergian Efficiency (1.75x): " << std::fixed << Statistics::grynbergianEfficiency() << "%"
+			<< "\nLucky guesses: " << Statistics::luckyGuesses() << "\n"
+			<< "Repeated reveals: " << Statistics::monkeyBrain() << "\n"
+			<< "\nFastest match: " << std::fixed << Statistics::fastest() << "s\n"
+			<< "Slowest match: " << std::fixed << Statistics::slowest() << "s\n"
+			<< "\nMinimum attempts: " << Statistics::minimalAttempts() << "\n"
+			<< "Attempts: " << Statistics::attempts() << "\n"
+			<< "Matches: " << Statistics::matches() << "\n"
+			<< "Mismatches: " << Statistics::mismatches();
+
+		MessageBoxA(nullptr, oss.str().c_str(), "karvikmatch results", MB_OK | MB_ICONINFORMATION);
 
 		SFX::play("max_win");
-
-		MessageBoxA(nullptr, std::string(
-			"MAX WIN!\n\nMinimal attempts: " + std::to_string(givenPairs) + " | " + std::to_string(static_cast<int>(static_cast<float>(givenPairs) * 1.75f)) +
-			"\nAttempts: " + std::to_string(givenPairs + m_mismatched)
-			+ "\n\n" + oss.str()
-			+ (grynbergianEfficiency >= 100.0F ? "\n\nGet a life holy" : "")
-		).c_str(), "karvikmatch", MB_OK | MB_ICONINFORMATION);
-
 		Scenery::load(SceneId::Game); // automatically restart for now
 	}
 public:
@@ -132,6 +128,7 @@ public:
 
 		BGM::queue("katamari");
 
+		Statistics::reset();
 		Scene::onLoad();
 	}
 	void onUnload() override {
