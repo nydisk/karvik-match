@@ -7,7 +7,14 @@
 #include <algorithm>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Shader.hpp>
+#include <SFML/Graphics/Font.hpp>
 #include <SFML/Audio/SoundBuffer.hpp>
+
+struct RegistryMusicInfo {
+	std::unique_ptr<sf::Music> pMusic;
+	std::string author;
+	std::string title;
+};
 
 class Registry {
 public:
@@ -16,9 +23,19 @@ private:
 	inline static std::unordered_map<std::string, std::unique_ptr<sf::Texture>> m_tex{};
 	inline static std::unordered_map<std::string, std::unique_ptr<sf::Sound>> m_snd{};
 	inline static std::vector<std::unique_ptr<sf::SoundBuffer>> m_sndbf{};
-	inline static std::unordered_map<std::string, std::unique_ptr<sf::Music>> m_msc{};
+	inline static std::unordered_map<std::string, RegistryMusicInfo> m_msc{};
 	inline static std::unique_ptr<sf::Shader> m_globalPosterizationShader{};
+	inline static std::unique_ptr<sf::Font> m_globalFont{};
 public:
+	[[nodiscard]] inline static const sf::Font& getFont() {
+		return *m_globalFont;
+	}
+	[[nodiscard]] inline static bool loadFont(const std::string& path) {
+		m_globalFont = std::make_unique<sf::Font>();
+		if (!m_globalFont->openFromFile(path)) return false;
+		return true;
+	}
+
 	[[nodiscard]] inline static const sf::Shader& getGlobalPosterizationShader() {
 		return *m_globalPosterizationShader;
 	}
@@ -42,16 +59,16 @@ public:
 		return true;
 	}
 
-	[[nodiscard]] inline static sf::Music& getMusic(const std::string& id) {
+	[[nodiscard]] inline static RegistryMusicInfo& getMusic(const std::string& id) {
 		auto it = m_msc.find(id);
 		if (it == m_msc.end()) throw std::out_of_range("msc not found: " + id);
-		return *(it->second);
+		return it->second;
 	}
-	[[nodiscard]] inline static bool loadMusic(const std::string& filename, const std::string& id) {
+	[[nodiscard]] inline static bool loadMusic(const std::string& filename, const std::string& id, const std::string& author, const std::string& title) {
 		std::unique_ptr<sf::Music> msc = std::make_unique<sf::Music>();
 		if (!msc->openFromFile(filename)) return false;
-		m_msc[id] = std::move(msc);
-		std::cout << "loaded music: '" << id << "' @ " << filename << std::endl;
+		m_msc[id] = { std::move(msc), author, title };
+		std::cout << "loaded music: '" << id << "' @ " << filename << " by " << author << " titled '" << title << "'" << std::endl;
 		return true;
 	}
 

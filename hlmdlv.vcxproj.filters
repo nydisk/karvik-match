@@ -68,5 +68,8 @@
     <ClInclude Include="transition.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="bgm.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

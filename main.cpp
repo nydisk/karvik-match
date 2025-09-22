@@ -61,12 +61,16 @@ static void loadRegistry() {
 		assetLoadError("splashfx", "/data/sound/splash.ogg");
 	}
 
-	if (!Registry::loadMusic("./data/sound/katamari.ogg", "katamari")) {
+	if (!Registry::loadMusic("./data/sound/katamari.ogg", "katamari", "Fearofdark", "Rolling Down The Street, In My Katamari")) {
 		assetLoadError("katamari", "/data/sound/katamari.ogg");
 	}
 
 	if (!Registry::loadGlobalPosterizationShader("./data/posterize.frag")) {
 		assetLoadError("globalPosterizationShader", "/data/posterize.frag");
+	}
+
+	if (!Registry::loadFont("C:/Windows/fonts/arial.ttf")) {
+		assetLoadError("font", "C:/Windows/fonts/arial.ttf");
 	}
 }
 
@@ -111,6 +115,7 @@ int main(){
 			Scenery::active()->onSFMLEvent(ev);
 		}
 
+		BGM::update();
 		Scenery::active()->update(renderTarget, window, timeSnap);
 		Transition::update(timeSnap);
 

@@ -5,11 +5,14 @@
 #include "scene.hpp"
 #include "card.hpp"
 #include "rng.hpp"
+#include "bgm.hpp"
 
 class GameScene : public Scene {
 	std::vector<std::string> m_chosenCards{};
 	Card* m_gameCards[Card::CARDS_PER_COLUMN][Card::CARDS_PER_ROW]{};
 	Revealer m_revealer{};
+
+	sf::Text m_nowPlayingText{Registry::getFont(), "nothing", 14u};
 	
 	int m_mismatched{};
 	
@@ -80,6 +83,15 @@ public:
 			triggerGameOver();
 		}
 
+		RegistryMusicInfo* pMsc = BGM::currentlyPlaying();
+		if (pMsc) {
+			m_nowPlayingText.setString("now playing: \"" + pMsc->title + "\" - " + pMsc->author);
+			m_nowPlayingText.setPosition({
+				8,
+				window.getView().getSize().y - m_nowPlayingText.getGlobalBounds().size.y - 8
+			});
+		}
+
 		if (m_gameOver && !m_cardAnimationsFinished) {
 			m_gameOverDelayTimer -= time.delta;
 			if (m_gameOverDelayTimer <= 0.0F) {
@@ -102,6 +114,8 @@ public:
 				m_gameCards[y][x]->draw(renderTarget);
 			}
 		}
+
+		renderTarget.draw(m_nowPlayingText);
 	}
 	void onLoad() override {
 		if (Card::CARDS_TOTAL != static_cast<int>(m_chosenCards.size())) {
@@ -116,8 +130,7 @@ public:
 			}
 		}
 
-		Registry::getMusic("katamari").setLooping(true);
-		Registry::getMusic("katamari").play();
+		BGM::queue("katamari");
 
 		Scene::onLoad();
 	}

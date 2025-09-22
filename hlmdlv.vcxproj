@@ -134,6 +134,7 @@
     <ClCompile Include="scene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="bgm.hpp" />
     <ClInclude Include="card.hpp" />
     <ClInclude Include="gameScene.hpp" />
     <ClInclude Include="manifest.hpp" />
