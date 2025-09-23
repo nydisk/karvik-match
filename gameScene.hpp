@@ -63,11 +63,11 @@ class GameScene : public Scene {
 			<< "\nMinimum attempts: " << Statistics::minimalAttempts() << "\n"
 			<< "Attempts: " << Statistics::attempts() << "\n"
 			<< "Matches: " << Statistics::matches() << "\n"
-			<< "Mismatches: " << Statistics::mismatches();
-
-		MessageBoxA(nullptr, oss.str().c_str(), "karvikmatch results", MB_OK | MB_ICONINFORMATION);
+			<< "Mismatches: " << Statistics::mismatches() << "\n\n"
+			<< "\nGrade: " << Statistics::gradeString(Statistics::grade());
 
 		SFX::play("max_win");
+		MessageBoxA(nullptr, oss.str().c_str(), "karvikmatch results", MB_OK | MB_ICONINFORMATION);
 		Scenery::load(SceneId::Game); // automatically restart for now
 	}
 public:

@@ -5,6 +5,10 @@
 
 #undef max
 
+enum class StatisticsGrade {
+	SS, S, A, B, C, F,
+};
+
 class Statistics {
 	inline static std::array<int, Card::CARDS_TOTAL> m_cardSeenCount{};
 
@@ -20,7 +24,19 @@ class Statistics {
 	inline static float m_slowestMatch = 0;
 
 	inline static bool m_firstFlipDone = false;
+
 public:
+	inline static std::string gradeString(const StatisticsGrade grade) {
+		switch (grade) {
+		case StatisticsGrade::SS: return "S+";
+		case StatisticsGrade::S: return "S";
+		case StatisticsGrade::A: return "A";
+		case StatisticsGrade::B: return "B";
+		case StatisticsGrade::C: return "C";
+		case StatisticsGrade::F: return "F";
+		}
+		return "-";
+	}
 	inline static void reset() {
 		m_firstFlipDone = false;
 		m_cardSeenCount = std::array<int, Card::CARDS_TOTAL>{};
@@ -63,8 +79,31 @@ public:
 	inline static float rawEfficiency() {
 		return (static_cast<float>(m_totalPairs) / static_cast<float>(m_totalPairs + m_mismatched)) * 100;
 	}
-	inline static float grade() {
+	inline static StatisticsGrade grade() {
+		float e = grynbergianEfficiency();
+		int mb = monkeyBrain();
 
+		if (e >= 100.0F && mb == 0 && mismatches() == 0) {
+			return StatisticsGrade::SS;
+		}
+
+		if (e >= 90.0F && mb <= 2){
+			return StatisticsGrade::S;
+		}
+
+		if (e >= 75.0f && mb <= 5) {
+			return StatisticsGrade::A;
+		}
+
+		if (e >= 60.0f) {
+			return StatisticsGrade::B;
+		}
+
+		if (e >= 40.0f) {
+			return StatisticsGrade::C;
+		}
+
+		return StatisticsGrade::F;
 	}
 	inline static float slowest() {
 		return m_slowestMatch;
