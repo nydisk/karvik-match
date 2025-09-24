@@ -40,11 +40,14 @@ public:
 
 		Statistics::flipped(c);
 
+		std::cout << "revealer: revealing " << c << " (" << c->gridPos().x << ", " << c->gridPos().y << ")" << std::endl;
+
 		switch (m_state) {
 		case RevealState::First:
 			m_revealed[0] = c;
 			c->show();
 			m_state = RevealState::Second;
+			std::cout << "revealer: result = none" << std::endl;
 			return RevealResult::None;
 		case RevealState::Second:
 			m_revealed[1] = c;
@@ -58,12 +61,13 @@ public:
 				resetMemory();
 				m_state = RevealState::First;
 
-
+				std::cout << "revealer: result = match" << std::endl;
 				return RevealResult::Matched;
 			}
 			else {
 				Statistics::mismatch(m_revealed[0], m_revealed[1]);
 				m_state = RevealState::Checking;
+				std::cout << "revealer: result = mismatch" << std::endl;
 				return RevealResult::Mismatched;
 			}
 		case RevealState::Checking:
@@ -73,9 +77,11 @@ public:
 			m_revealed[0] = c;
 			c->show();
 
+			std::cout << "revealer: result = none" << std::endl;
 			return RevealResult::None;
 		}
 
+		std::cout << "revealer: result = none" << std::endl;
 		return RevealResult::None;
 	}
 };

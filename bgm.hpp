@@ -14,7 +14,7 @@ class BGM {
 		nowPlaying->setLooping(false); // just in case
 		nowPlaying->play();
 		
-		std::cout << "now playing: '" + m_playlist[m_nowPlaying]->title + "' by " + m_playlist[m_nowPlaying]->author + " at 0x" << std::hex << std::showbase << nowPlaying << std::dec << std::noshowbase << std::endl;
+		std::cout << "bgm: now playing: '" + m_playlist[m_nowPlaying]->title + "' by " + m_playlist[m_nowPlaying]->author + " at 0x" << std::hex << std::showbase << nowPlaying << std::dec << std::noshowbase << std::endl;
 	}
 public:
 	inline static RegistryMusicInfo* currentlyPlaying(){
@@ -23,15 +23,15 @@ public:
 	}
 	inline static void queue(const std::string& id) {
 		m_playlist.push_back(&Registry::getMusic(id));
-		std::cout << "bgm queued: " << id << std::endl;
+		std::cout << "bgm: queued: " << id << std::endl;
 	}
 	inline static void shuffle() {
 		std::shuffle(m_playlist.begin(), m_playlist.end(), RNG::gen());
-		std::cout << "shuffled the bgm list" << std::endl;
+		std::cout << "bgm: shuffled the bgm list" << std::endl;
 	}
 	inline static void play() {
 		if (m_playlist.empty()) {
-			std::cout << "no tracks to play :3" << std::endl;
+			std::cout << "bgm: no tracks to play :3" << std::endl;
 			return;
 		}
 		m_playing = true;
@@ -39,12 +39,12 @@ public:
 		shuffle();
 		playCurrent();
 
-		std::cout << "playing " << m_playlist.size() << " tracks on loop + shuffle" << std::endl;
+		std::cout << "bgm: playing " << m_playlist.size() << " tracks on loop + shuffle" << std::endl;
 	}
 	inline static void next() {
 		if (m_playlist.empty() || !m_playing) return;
 
-		std::cout << "playing next track" << std::endl;
+		std::cout << "bgm: playing next track" << std::endl;
 		m_nowPlaying++;
 		if (m_nowPlaying == m_playlist.size()) {
 			replay();
@@ -54,13 +54,13 @@ public:
 		playCurrent();
 	}
 	inline static void replay() {
-		std::cout << "playlist finished, replaying bgm" << std::endl;
+		std::cout << "bgm: playlist finished, replaying" << std::endl;
 		m_nowPlaying = 0;
 		shuffle();
 		play();
 	}
 	inline static void resetState() { 
-		std::cout << "resetting bgm state" << std::endl;
+		std::cout << "bgm: resetting state" << std::endl;
 		if (m_playing)
 			m_playlist[m_nowPlaying]->pMusic->stop();
 		m_playlist.clear();

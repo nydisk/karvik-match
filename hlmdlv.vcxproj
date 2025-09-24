@@ -71,8 +71,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <ExternalIncludePath>C:\Users\matti\Documents\SFML3\include;$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>C:\Users\matti\Documents\SFML3\lib;$(LibraryPath)</LibraryPath>
+    <ExternalIncludePath>X:\C++ Libraries\SFML3\include;$(ExternalIncludePath)</ExternalIncludePath>
+    <LibraryPath>X:\C++ Libraries\SFML3\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

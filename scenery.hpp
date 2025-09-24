@@ -12,12 +12,12 @@ public:
 	}
 	inline static void registerFactory(const SceneId id, const std::function<std::unique_ptr<Scene>()>& factory) {
 		m_scenes[id] = factory;
-		std::cout << "Registered scene factory " << static_cast<int>(id) << std::endl;
+		std::cout << "scenery: Registered scene factory " << static_cast<int>(id) << std::endl;
 	}
 	inline static void load(const SceneId id) {
 		if (!m_activeScene) { // first scene edge case
 			auto it = m_scenes.find(id);
-			if (it == m_scenes.end()) throw std::runtime_error("no scene registered");
+			if (it == m_scenes.end()) throw std::runtime_error("scenery: no scene registered");
 			m_activeScene = it->second();
 			m_activeScene->onLoad();
 			Transition::fadeIn();
@@ -33,7 +33,7 @@ public:
 				m_activeScene = it->second();
 			}
 			else {
-				throw std::runtime_error("no scene registered");
+				throw std::runtime_error("scenery: no scene registered");
 			}
 			m_activeScene = m_scenes[id]();
 			m_activeScene->onLoad();

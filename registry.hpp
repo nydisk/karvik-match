@@ -55,7 +55,7 @@ public:
 		std::unique_ptr<sf::Texture> tex = std::make_unique<sf::Texture>();
 		if (!tex->loadFromFile(filename)) return false;
 		m_tex[id] = std::move(tex);
-		std::cout << "loaded texture: '" << id << "' @ " << filename << std::endl;
+		std::cout << "registry: loaded texture '" << id << "' @ " << filename << std::endl;
 		return true;
 	}
 
@@ -68,7 +68,7 @@ public:
 		std::unique_ptr<sf::Music> msc = std::make_unique<sf::Music>();
 		if (!msc->openFromFile(filename)) return false;
 		m_msc[id] = { std::move(msc), author, title };
-		std::cout << "loaded music: '" << id << "' @ " << filename << " by " << author << " titled '" << title << "'" << std::endl;
+		std::cout << "registry: loaded music '" << id << "' @ " << filename << " by " << author << " titled '" << title << "'" << std::endl;
 		return true;
 	}
 
@@ -85,7 +85,7 @@ public:
 		std::unique_ptr<sf::Sound> snd = std::make_unique<sf::Sound>(*m_sndbf.back());
 		m_snd[id] = std::move(snd);
 
-		std::cout << "loaded sound: '" << id << "' @ " << filename << std::endl;
+		std::cout << "registry: loaded sound '" << id << "' @ " << filename << std::endl;
 		return true;
 	}
 	inline static void deathAndDestruction() {

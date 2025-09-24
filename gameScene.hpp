@@ -67,6 +67,9 @@ class GameScene : public Scene {
 			<< "\nGrade: " << Statistics::gradeString(Statistics::grade());
 
 		SFX::play("max_win");
+		std::cout << " = = STATISTICS = = " << std::endl;
+		std::cout << oss.str() << std::endl;
+		std::cout << " = = STATISTICS = = " << std::endl;
 		MessageBoxA(nullptr, oss.str().c_str(), "karvikmatch results", MB_OK | MB_ICONINFORMATION);
 		Scenery::load(SceneId::Game); // automatically restart for now
 	}

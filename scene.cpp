@@ -4,10 +4,10 @@ Scene::Scene(const SceneId id) : m_id(id) {}
 
 void Scene::onLoad() {
 	BGM::play();
-	std::cout << "Loaded scene " << static_cast<int>(m_id) << std::endl;
+	std::cout << "scene-" << static_cast<int>(m_id) << ": Loaded scene" << std::endl;
 }
 
 void Scene::onUnload() {
 	BGM::resetState();
-	std::cout << "Unloaded scene " << static_cast<int>(m_id) << std::endl;
+	std::cout << "scene-" << static_cast<int>(m_id) << ": Unloaded scene" << std::endl;
 }

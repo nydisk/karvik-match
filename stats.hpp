@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 #include <array>
 #include <SFML/System/Clock.hpp>
 #include "card.hpp"
@@ -47,6 +48,7 @@ public:
 		m_fastestMatch = std::numeric_limits<float>::max();
 		m_slowestMatch = 0;
 		m_luckyGuesses = 0;
+		std::cout << "statistics: reset" << std::endl;
 	}
 	inline static void mismatch(Card* card1, Card* card2) {
 		m_mismatched++;
@@ -68,6 +70,7 @@ public:
 	}
 	inline static void flipped(Card* card) {
 		if (!m_firstFlipDone) { 
+			std::cout << "statistics: begin timer" << std::endl;
 			m_firstFlipDone = true;
 			m_matchTimer.restart();
 		}
@@ -91,11 +94,11 @@ public:
 			return StatisticsGrade::S;
 		}
 
-		if (e >= 75.0f && mb <= 5) {
+		if (e >= 75.0f && mb <= 4) {
 			return StatisticsGrade::A;
 		}
 
-		if (e >= 60.0f) {
+		if (e >= 65.0f) {
 			return StatisticsGrade::B;
 		}
 
