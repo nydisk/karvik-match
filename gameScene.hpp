@@ -71,8 +71,19 @@ class GameScene : public Scene {
 		std::cout << " = = STATISTICS = = " << std::endl;
 		std::cout << oss.str() << std::endl;
 		std::cout << " = = STATISTICS = = " << std::endl;
-		MessageBoxA(nullptr, oss.str().c_str(), "karvikmatch results", MB_OK | MB_ICONINFORMATION);
-		Scenery::load(SceneId::Game); // automatically restart for now
+
+		int res = MessageBoxA(nullptr, oss.str().c_str(), "karvikmatch results", MB_RETRYCANCEL | MB_ICONINFORMATION);
+		switch (res) {
+		case IDRETRY:
+			Scenery::load(SceneId::Game);	
+			break;
+		case IDABORT:
+			Scenery::load(SceneId::Menu);
+			break;
+		default:
+			Scenery::load(SceneId::Menu); // for now ig
+			break;
+		}
 	}
 public:
 	GameScene(const std::vector<std::string>& loadedCards) : Scene(SceneId::Game) {
