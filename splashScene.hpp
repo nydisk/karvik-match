@@ -22,7 +22,7 @@ public:
 		}
 		if (m_splashTimer >= SPLASH_TIME && !m_splashIsOver) {
 			m_splashIsOver = true;
-			Scenery::load(SceneId::Game);
+			Scenery::load(SceneId::Menu);
 		}
 	}
 	void draw(sf::RenderTarget& target, sf::RenderWindow& window, const TimeSnap& time) override {

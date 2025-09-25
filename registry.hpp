@@ -9,6 +9,8 @@
 #include <SFML/Graphics/Shader.hpp>
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Audio/SoundBuffer.hpp>
+#include <SFML/Audio/Music.hpp>
+#include <SFML/Audio/Sound.hpp>
 
 struct RegistryMusicInfo {
 	std::unique_ptr<sf::Music> pMusic;
@@ -18,7 +20,7 @@ struct RegistryMusicInfo {
 
 class Registry {
 public:
-	inline static constexpr int POSTERIZATION_LEVELS = 96;
+	inline static constexpr int POSTERIZATION_LEVELS = 1024;
 private:
 	inline static std::unordered_map<std::string, std::unique_ptr<sf::Texture>> m_tex{};
 	inline static std::unordered_map<std::string, std::unique_ptr<sf::Sound>> m_snd{};
@@ -33,6 +35,7 @@ public:
 	[[nodiscard]] inline static bool loadFont(const std::string& path) {
 		m_globalFont = std::make_unique<sf::Font>();
 		if (!m_globalFont->openFromFile(path)) return false;
+		m_globalFont->setSmooth(false);
 		return true;
 	}
 

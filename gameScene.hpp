@@ -2,6 +2,7 @@
 #include "scenery.hpp"
 #include "revealer.hpp"
 #include "registry.hpp"
+#include "settings.hpp"
 #include "stats.hpp"
 #include "scene.hpp"
 #include "card.hpp"
@@ -13,7 +14,7 @@ class GameScene : public Scene {
 	Card* m_gameCards[Card::CARDS_PER_COLUMN][Card::CARDS_PER_ROW]{};
 	Revealer m_revealer{};
 
-	sf::Text m_nowPlayingText{Registry::getFont(), "nothing", 14u};
+	sf::Text m_nowPlayingText{Registry::getFont(), "nothing", 12u};
 	
 	bool m_gameOver = false;
 	bool m_cardAnimationsFinished = false;
@@ -87,7 +88,7 @@ public:
 			m_nowPlayingText.setString("now playing: \"" + pMsc->title + "\" - " + pMsc->author);
 			m_nowPlayingText.setPosition({
 				8,
-				window.getView().getSize().y - m_nowPlayingText.getGlobalBounds().size.y - 8
+				Settings::VIRTUAL_WIDTH - m_nowPlayingText.getGlobalBounds().size.y - 8
 			});
 		}
 

@@ -129,16 +129,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="button.cpp" />
     <ClCompile Include="card.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="scene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bgm.hpp" />
+    <ClInclude Include="button.hpp" />
     <ClInclude Include="card.hpp" />
     <ClInclude Include="gameScene.hpp" />
     <ClInclude Include="manifest.hpp" />
     <ClInclude Include="mathhelper.hpp" />
+    <ClInclude Include="menuScene.hpp" />
     <ClInclude Include="registry.hpp" />
     <ClInclude Include="revealer.hpp" />
     <ClInclude Include="rng.hpp" />

@@ -11,6 +11,7 @@
 #include "splashScene.hpp"
 #include "transition.hpp"
 #include "gameScene.hpp"
+#include "menuScene.hpp"
 #include "registry.hpp"
 #include "settings.hpp"
 #include "timesnap.hpp"
@@ -38,6 +39,9 @@ static void loadRegistry() {
 
 	if (!Registry::loadTexture("./data/splash.png", "splash")) {
 		assetLoadError("splash", "/data/splash.png");
+	}
+	if (!Registry::loadTexture("./data/bgmenu.png", "bgmenu")) {
+		assetLoadError("bgmenu", "/data/bgmenu.png");
 	}
 	
 	const auto cardFronts = Manifest::readManifest("./data/cards.txt");
@@ -77,6 +81,7 @@ static void loadRegistry() {
 static void loadScenery() {
 	Scenery::registerFactory(SceneId::Game, []() { return std::make_unique<GameScene>(loadedCards); });
 	Scenery::registerFactory(SceneId::Splash, []() { return std::make_unique<SplashScene>(); });
+	Scenery::registerFactory(SceneId::Menu, []() { return std::make_unique<MenuScene>(); });
 }
 
 int main(){
