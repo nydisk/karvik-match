@@ -30,6 +30,7 @@ private:
 	sf::RectangleShape m_background{ {Settings::VIRTUAL_WIDTH, Settings::VIRTUAL_HEIGHT} };
 	sf::RectangleShape m_choicesBackground{ {Settings::VIRTUAL_WIDTH * 0.6F, Settings::VIRTUAL_HEIGHT * 0.3F} };
 	std::vector<MenuButton> m_buttons{};
+	bool m_userMadeChoice = false;
 
 	void createButton(const std::string& text, const MenuOption idx) {
 		const sf::Vector2f buttonSize{ m_choicesBackground.getSize().x - BUTTON_PADDING * 2, (m_choicesBackground.getSize().y - TOTAL_PADDING) / BUTTON_COUNT };
@@ -53,10 +54,12 @@ public:
 	void update(sf::RenderTarget& target, sf::RenderWindow& window, const TimeSnap& time) override {
 		for (auto& btn : m_buttons) {
 			btn.button.update(window.mapPixelToCoords(sf::Mouse::getPosition(window)));
+			if (m_userMadeChoice) continue;
 			if (btn.button.wasHovered()) {
 				SFX::play("hover");
 			}
 			if (!btn.button.wasClicked()) continue;
+			m_userMadeChoice = true;
 			switch (btn.id) {
 				case MenuOption::Play:
 					Scenery::load(SceneId::Game);
