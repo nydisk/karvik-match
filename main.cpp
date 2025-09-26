@@ -8,6 +8,7 @@
 #include <string>
 #include <math.h>
 #include <SFML/Graphics.hpp>
+#include "settingsScene.hpp"
 #include "splashScene.hpp"
 #include "transition.hpp"
 #include "gameScene.hpp"
@@ -48,6 +49,9 @@ static void loadRegistry() {
 	if (!Registry::loadTexture("data/menu/btn.png", "menu_btn")) {
 		assetLoadError("menu_btn", "data/menu/btn.png");
 	}
+	if (!Registry::loadTexture("data/settings/category_btn_map.png", "category_btn_map")) {
+		assetLoadError("category_btn_map", "data/settings/category_btn_map.png");
+	}
 	
 	const auto cardFronts = Manifest::readManifest("./data/cards.txt");
 	for (const auto& def : cardFronts) {
@@ -87,6 +91,7 @@ static void loadScenery() {
 	Scenery::registerFactory(SceneId::Game, []() { return std::make_unique<GameScene>(loadedCards); });
 	Scenery::registerFactory(SceneId::Splash, []() { return std::make_unique<SplashScene>(); });
 	Scenery::registerFactory(SceneId::Menu, []() { return std::make_unique<MenuScene>(); });
+	Scenery::registerFactory(SceneId::Settings, []() { return std::make_unique<SettingsScene>(); });
 }
 
 int main(){
@@ -98,7 +103,7 @@ int main(){
 	sf::RectangleShape renderShape({ static_cast<float>(window.getSize().x), static_cast<float>(window.getSize().y)});
 
 	Transition::init(window);
-	Scenery::load(SceneId::Splash);
+	Scenery::load(Settings::INITIAL_SCENE);
 
 	window.setSize({
 		static_cast<unsigned int>(Settings::VIRTUAL_WIDTH * Settings::WINDOW_MULTIPLIER),

@@ -4,10 +4,11 @@
 class Button {
 	sf::RectangleShape m_shape;
 	sf::Text m_text;
-	
+protected:
 	sf::Color m_idleColor;
 	sf::Color m_hoverColor;
 	sf::Color m_activeColor;
+private:
 
 	const sf::Texture* m_texture;
 
@@ -16,10 +17,17 @@ class Button {
 	bool m_wasHovered = false;
 	bool m_wasActivated = false;
 
+	bool m_useHoverImage = true;
+
 	sf::IntRect m_idleRect{};
 	sf::IntRect m_hoverRect{};
 	sf::IntRect m_activeRect{};
-
+protected:
+	sf::RectangleShape& getShape();
+	const sf::RectangleShape& getShape() const;
+	bool hasTexture() const;
+	const sf::IntRect& getActiveRect() const;
+	const sf::IntRect& getIdleRect() const;
 public:
 	Button(const sf::Vector2f& size, const sf::Vector2f& position, const std::string& text,
 		const sf::Color& idleColor, const sf::Color& hoverColor, const sf::Color& activeColor,
@@ -29,8 +37,10 @@ public:
 	void forceRects(const sf::IntRect& idle, const sf::IntRect& hover, const sf::IntRect& active);
 	void update(const sf::Vector2f& mousePos);
 	void draw(sf::RenderTarget& target) const;
-	bool isPressed() const;
-	bool isHovered() const;
-	bool wasClicked() const;
-	bool wasHovered() const;
+	void setUseHoverImage(const bool useHoverImage);
+	[[nodiscard]] bool usesHoverImage() const;
+	[[nodiscard]] bool isPressed() const;
+	[[nodiscard]] bool isHovered() const;
+	[[nodiscard]] bool wasClicked() const;
+	[[nodiscard]] bool wasHovered() const;
 };

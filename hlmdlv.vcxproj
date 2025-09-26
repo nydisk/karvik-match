@@ -133,6 +133,7 @@
     <ClCompile Include="card.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="scene.cpp" />
+    <ClCompile Include="toggleButton.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bgm.hpp" />
@@ -148,10 +149,12 @@
     <ClInclude Include="scene.hpp" />
     <ClInclude Include="scenery.hpp" />
     <ClInclude Include="settings.hpp" />
+    <ClInclude Include="settingsScene.hpp" />
     <ClInclude Include="sfx.hpp" />
     <ClInclude Include="splashScene.hpp" />
     <ClInclude Include="stats.hpp" />
     <ClInclude Include="timesnap.hpp" />
+    <ClInclude Include="toggleButton.hpp" />
     <ClInclude Include="transition.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

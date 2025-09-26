@@ -71,7 +71,7 @@ public:
 					Scenery::load(SceneId::Game);
 					break;
 				case MenuOption::Settings:
-					//Scenery::load(SceneId::Settings);
+					Scenery::load(SceneId::Settings);
 					break;
 				case MenuOption::Cards:
 					//Scenery::load(SceneId::Cards);

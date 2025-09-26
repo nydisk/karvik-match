@@ -1,5 +1,6 @@
 #include "button.hpp"
 
+
 Button::Button(const sf::Vector2f& size, const sf::Vector2f& position, const std::string& text, const sf::Color& idleColor, const sf::Color& hoverColor, const sf::Color& activeColor, const std::string& texture, const unsigned int minCharSize, const unsigned int maxCharSize)
 	: m_idleColor(idleColor), m_hoverColor(hoverColor), m_activeColor(activeColor),
 	  m_texture(texture == "" ? nullptr : &Registry::getTexture(texture)),
@@ -71,7 +72,7 @@ void Button::update(const sf::Vector2f& mousePos) {
 				m_isPressed = false;
 			}
 			m_shape.setFillColor(m_hoverColor);
-			if (m_texture) {
+			if (m_texture && m_useHoverImage) {
 				m_shape.setTextureRect(m_hoverRect);
 			}
 		}
@@ -90,7 +91,21 @@ void Button::draw(sf::RenderTarget& target) const {
 	target.draw(m_text);
 }
 
+void Button::setUseHoverImage(const bool useHoverImage) {
+	m_useHoverImage = useHoverImage;
+}
+
+bool Button::usesHoverImage() const {
+	return m_useHoverImage;
+}
+
 bool Button::isPressed() const { return m_isPressed; }
 bool Button::isHovered() const { return m_isHovered; }
 bool Button::wasClicked() const { return m_wasActivated; }
 bool Button::wasHovered() const { return m_wasHovered; }
+
+sf::RectangleShape& Button::getShape() { return m_shape; }
+const sf::RectangleShape& Button::getShape() const { return m_shape; }
+bool Button::hasTexture() const { return m_texture != nullptr; }
+const sf::IntRect& Button::getActiveRect() const { return m_activeRect; }
+const sf::IntRect& Button::getIdleRect() const { return m_idleRect; }

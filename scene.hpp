@@ -6,7 +6,8 @@ enum class SceneId : int {
 	Splash,
 	Menu,
 	Game,
-	Results
+	Results,
+	Settings
 };
 class Scene {
 protected:

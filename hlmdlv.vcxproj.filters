@@ -27,6 +27,9 @@
     <ClCompile Include="button.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="toggleButton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="card.hpp">
@@ -81,6 +84,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="button.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="toggleButton.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="settingsScene.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
