@@ -13,18 +13,15 @@ void ToggleButton::update(const sf::Vector2f& mousePos) {
 		m_toggled = !m_toggled;
 	}
 
-	if (m_toggled) {
-		getShape().setFillColor(isHovered() ? m_hoverColor : m_activeColor);
-		if (hasTexture()) {
-			getShape().setTextureRect(getActiveRect());
-		}
+	if (isHovered()) {
+		getShape().setFillColor(isPressed() ? m_activeColor : m_hoverColor);
 	}
 	else {
-		getShape().setFillColor(isHovered() ? m_hoverColor : m_idleColor);
-		if (hasTexture()) {
-			getShape().setTextureRect(getIdleRect());
-		}
+		getShape().setFillColor(m_idleColor);
 	}
+
+	if (!hasTexture()) return;
+	getShape().setTextureRect(m_toggled ? getActiveRect() : getIdleRect());
 }
 
 bool ToggleButton::toggled() const { return m_toggled; }
