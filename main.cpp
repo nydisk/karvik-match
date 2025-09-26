@@ -45,9 +45,15 @@ static void loadRegistry() {
 	if (!Registry::loadTexture("data/menu/bg.png", "bgmenu")) {
 		assetLoadError("bgmenu", "data/menu/bg.png");
 	}
+	if (!Registry::loadTexture("data/settings/bg.png", "bgsettings")) {
+		assetLoadError("bgsettings", "data/settings/bg.png");
+	}
 
 	if (!Registry::loadTexture("data/menu/btn.png", "menu_btn")) {
 		assetLoadError("menu_btn", "data/menu/btn.png");
+	}
+	if (!Registry::loadTexture("data/settings/dropdown.png", "dropdown")) {
+		assetLoadError("dropdown", "data/settings/dropdown.png");
 	}
 	if (!Registry::loadTexture("data/settings/category_btn_map.png", "category_btn_map")) {
 		assetLoadError("category_btn_map", "data/settings/category_btn_map.png");
@@ -104,16 +110,6 @@ int main(){
 
 	Transition::init(window);
 	Scenery::load(Settings::INITIAL_SCENE);
-
-	window.setSize({
-		static_cast<unsigned int>(Settings::VIRTUAL_WIDTH * Settings::WINDOW_MULTIPLIER),
-		static_cast<unsigned int>(Settings::VIRTUAL_HEIGHT * Settings::WINDOW_MULTIPLIER)
-	});
-
-	window.setPosition({
-		static_cast<int>(sf::VideoMode::getDesktopMode().size.x / 2) - static_cast<int>(window.getSize().x / 2),
-		static_cast<int>(sf::VideoMode::getDesktopMode().size.y / 2) - static_cast<int>(window.getSize().y / 2)
-	});
 
 	sf::Clock deltaClock{};
 	sf::Clock clock{};
