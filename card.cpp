@@ -4,25 +4,31 @@
 #include "settings.hpp"
 #include "mathhelper.hpp"
 
-inline constexpr float Card::totalWidth() {
-	return (REAL_WIDTH * CARDS_PER_ROW) + ((CARDS_PER_ROW - 1) * CARD_SEPARATION);
+[[nodiscard]] float Card::cardSizeFactor() { return Settings::VIRTUAL_HEIGHT / 512.0f; }
+[[nodiscard]] float Card::realWidth() { return cardSizeFactor() * CARD_WIDTH; }
+[[nodiscard]] float Card::realHeight() { return cardSizeFactor() * CARD_HEIGHT; }
+[[nodiscard]] float Card::cardSeparation() { return 8.0f * cardSizeFactor(); }
+
+float Card::totalWidth() {
+	return (realWidth() * CARDS_PER_ROW) + ((CARDS_PER_ROW - 1) * cardSeparation());
 }
 
-inline constexpr float Card::totalHeight() {
-	return (REAL_HEIGHT * CARDS_PER_COLUMN) + ((CARDS_PER_COLUMN - 1) * CARD_SEPARATION);
+float Card::totalHeight() {
+	return (realHeight() * CARDS_PER_COLUMN) + ((CARDS_PER_COLUMN - 1) * cardSeparation());
 }
 
-inline constexpr sf::Vector2f Card::startingPosition() {
+sf::Vector2f Card::startingPosition() {
 	return {
 		(Settings::VIRTUAL_WIDTH - totalWidth()) / 2.0F,
 		(Settings::VIRTUAL_HEIGHT - totalHeight()) / 2.0F
 	};
 }
 
+
 sf::Vector2f Card::calculatePosition(const sf::Vector2i grid) {
 	return startingPosition() + sf::Vector2f{
-		static_cast<float>(grid.x) * (REAL_WIDTH + CARD_SEPARATION) + (REAL_WIDTH / 2),
-		static_cast<float>(grid.y) * (REAL_HEIGHT + CARD_SEPARATION) + (REAL_HEIGHT / 2)
+		static_cast<float>(grid.x) * (realWidth() + cardSeparation()) + (realWidth() / 2),
+		static_cast<float>(grid.y) * (realHeight() + cardSeparation()) + (realHeight() / 2)
 	};
 }
 
@@ -35,8 +41,8 @@ Card::Card(const std::string& id, const sf::Vector2i& gridPos) : m_unflippedTex(
 
 	m_gridPos = gridPos;
 
-	m_shape = sf::RectangleShape({ REAL_WIDTH, REAL_HEIGHT });
-	m_shape.setOrigin({ REAL_WIDTH / 2, REAL_HEIGHT / 2 });
+	m_shape = sf::RectangleShape({ realWidth(), realHeight() });
+	m_shape.setOrigin({ realWidth() / 2, realHeight() / 2 });
 
 	m_pos = Card::calculatePosition(gridPos);
 	m_shape.setPosition(m_pos);
@@ -130,12 +136,12 @@ void Card::updateFlip(const TimeSnap& time) {
 		break;
 	}
 }
-[[nodiscard]]sf::FloatRect Card::baseBounds() const {
+[[nodiscard]] sf::FloatRect Card::baseBounds() const {
 	return {
-		{m_pos.x - REAL_WIDTH / 2.0f,
-		m_pos.y - REAL_HEIGHT / 2.0f},
-		{REAL_WIDTH,
-		REAL_HEIGHT}
+	{m_pos.x - realWidth() / 2.0f,
+	 m_pos.y - realHeight() / 2.0f},
+	{realWidth(),
+	 realHeight()}
 	};
 }
 void Card::update(const sf::Vector2f& mousePos, const TimeSnap& time) {
