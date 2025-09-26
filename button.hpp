@@ -24,7 +24,7 @@ public:
 	Button(const sf::Vector2f& size, const sf::Vector2f& position, const std::string& text,
 		const sf::Color& idleColor, const sf::Color& hoverColor, const sf::Color& activeColor,
 		const std::string& texture = "",
-		const unsigned int minCharSize = 0, const unsigned int maxCharSize = 16u);
+		const unsigned int minCharSize = 0, const unsigned int maxCharSize = 24u);
 	void recalculateRects();
 	void forceRects(const sf::IntRect& idle, const sf::IntRect& hover, const sf::IntRect& active);
 	void update(const sf::Vector2f& mousePos);

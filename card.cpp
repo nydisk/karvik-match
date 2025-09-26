@@ -5,11 +5,11 @@
 #include "mathhelper.hpp"
 
 inline constexpr float Card::totalWidth() {
-	return (CARD_WIDTH * CARDS_PER_ROW) + ((CARDS_PER_ROW - 1) * CARD_SEPARATION);
+	return (REAL_WIDTH * CARDS_PER_ROW) + ((CARDS_PER_ROW - 1) * CARD_SEPARATION);
 }
 
 inline constexpr float Card::totalHeight() {
-	return (CARD_HEIGHT * CARDS_PER_COLUMN) + ((CARDS_PER_COLUMN - 1) * CARD_SEPARATION);
+	return (REAL_HEIGHT * CARDS_PER_COLUMN) + ((CARDS_PER_COLUMN - 1) * CARD_SEPARATION);
 }
 
 inline constexpr sf::Vector2f Card::startingPosition() {
@@ -21,8 +21,8 @@ inline constexpr sf::Vector2f Card::startingPosition() {
 
 sf::Vector2f Card::calculatePosition(const sf::Vector2i grid) {
 	return startingPosition() + sf::Vector2f{
-		static_cast<float>(grid.x) * (CARD_WIDTH + CARD_SEPARATION) + (CARD_WIDTH / 2),
-		static_cast<float>(grid.y) * (CARD_HEIGHT + CARD_SEPARATION) + (CARD_HEIGHT / 2)
+		static_cast<float>(grid.x) * (REAL_WIDTH + CARD_SEPARATION) + (REAL_WIDTH / 2),
+		static_cast<float>(grid.y) * (REAL_HEIGHT + CARD_SEPARATION) + (REAL_HEIGHT / 2)
 	};
 }
 
@@ -35,8 +35,8 @@ Card::Card(const std::string& id, const sf::Vector2i& gridPos) : m_unflippedTex(
 
 	m_gridPos = gridPos;
 
-	m_shape = sf::RectangleShape({ CARD_WIDTH,CARD_HEIGHT });
-	m_shape.setOrigin({CARD_WIDTH/2,CARD_HEIGHT/2});
+	m_shape = sf::RectangleShape({ REAL_WIDTH, REAL_HEIGHT });
+	m_shape.setOrigin({ REAL_WIDTH / 2, REAL_HEIGHT / 2 });
 
 	m_pos = Card::calculatePosition(gridPos);
 	m_shape.setPosition(m_pos);
@@ -130,7 +130,14 @@ void Card::updateFlip(const TimeSnap& time) {
 		break;
 	}
 }
-
+[[nodiscard]]sf::FloatRect Card::baseBounds() const {
+	return {
+		{m_pos.x - REAL_WIDTH / 2.0f,
+		m_pos.y - REAL_HEIGHT / 2.0f},
+		{REAL_WIDTH,
+		REAL_HEIGHT}
+	};
+}
 void Card::update(const sf::Vector2f& mousePos, const TimeSnap& time) {
 	if (!m_active) return;
 
@@ -162,7 +169,7 @@ void Card::update(const sf::Vector2f& mousePos, const TimeSnap& time) {
 		});
 	}
 
-	bool hoveringRightNow = m_shape.getGlobalBounds().contains(mousePos);
+	bool hoveringRightNow = baseBounds().contains(mousePos);
 	if (!m_hovered && hoveringRightNow && m_flipTimer >= 1.0f) {
 		SFX::play("hover");
 	}

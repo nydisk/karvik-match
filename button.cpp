@@ -10,7 +10,7 @@ Button::Button(const sf::Vector2f& size, const sf::Vector2f& position, const std
 	m_shape.setFillColor(m_idleColor);
 
 	m_text.setString(text);
-	m_text.setCharacterSize(std::clamp(static_cast<unsigned int>(size.y * 0.5f), minCharSize, maxCharSize));
+	m_text.setCharacterSize(std::clamp(static_cast<unsigned int>(size.y * 0.9f), minCharSize, maxCharSize));
 	m_text.setFillColor(sf::Color::White);
 
 	sf::FloatRect textBounds = m_text.getLocalBounds();

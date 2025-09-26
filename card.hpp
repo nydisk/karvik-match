@@ -2,6 +2,7 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 #include "timesnap.hpp"
+#include "settings.hpp"
 
 enum class CardFlipState {
 	FlippingNoFace,
@@ -10,10 +11,13 @@ enum class CardFlipState {
 
 class Card {
 public:
+	static constexpr float CARD_SIZE_FACTOR = (Settings::VIRTUAL_HEIGHT / 512.0f); // relative to 512x512 | assume height priority
 	static constexpr float CARD_WIDTH = 64;
+	static constexpr float REAL_WIDTH = CARD_SIZE_FACTOR * CARD_WIDTH;
 	static constexpr float CARD_HEIGHT = 96;
+	static constexpr float REAL_HEIGHT = CARD_SIZE_FACTOR * CARD_HEIGHT;
 	static constexpr float CARD_FLIP_TIME = 0.135f;
-	static constexpr float CARD_SEPARATION = 8;
+	static constexpr float CARD_SEPARATION = 8 * CARD_SIZE_FACTOR;
 	static constexpr float CARD_DISAPPEAR_TIME = 0.9f;
 	static constexpr float CARD_DISAPPEAR_DELAY = 0.2f;
 	static constexpr float CARD_HOVER_MULTIPLIER = 1.1f;
@@ -50,6 +54,7 @@ private:
 	void updateTexture();
 	void updateHoverScale(const TimeSnap& time);
 	void updateFlip(const TimeSnap& time);
+	[[nodiscard]] sf::FloatRect baseBounds() const;
 	[[nodiscard]] static constexpr float totalWidth();
 	[[nodiscard]] static constexpr float totalHeight();
 	[[nodiscard]] static constexpr sf::Vector2f startingPosition();

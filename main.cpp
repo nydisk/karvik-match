@@ -78,8 +78,8 @@ static void loadRegistry() {
 		assetLoadError("globalPosterizationShader", "data/shader/posterize.frag");
 	}
 
-	if (!Registry::loadFont("C:/Windows/fonts/arial.ttf")) {
-		assetLoadError("font", "C:/Windows/fonts/arial.ttf");
+	if (!Registry::loadFont("data/medodica.otf")) {
+		assetLoadError("font", "data/medodica.otf");
 	}
 }
 

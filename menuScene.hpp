@@ -13,8 +13,8 @@ public:
 	static constexpr sf::Color BUTTON_IDLE_COLOR{ 200,200,200,255 };
 	static constexpr sf::Color BUTTON_HOVER_COLOR{ 255,255,255,255 };
 	static constexpr sf::Color BUTTON_ACTIVE_COLOR{ 75,75,75,255 };
-	static constexpr unsigned int BUTTON_MIN_CHAR_SIZE = 12u;
-	static constexpr unsigned int BUTTON_MAX_CHAR_SIZE = 16u;
+	static constexpr unsigned int BUTTON_MIN_CHAR_SIZE = 24u;
+	static constexpr unsigned int BUTTON_MAX_CHAR_SIZE = 96u;
 private:
 	enum class MenuOption : size_t {
 		Play,
@@ -27,7 +27,7 @@ private:
 		MenuOption id;
 	};
 
-	sf::Text m_versionText{ Registry::getFont(), Settings::VERSION_STRING, 12u };
+	sf::Text m_versionText{ Registry::getFont(), Settings::VERSION_STRING, Settings::STANDARD_FONT_SIZE };
 	sf::RectangleShape m_background{ {Settings::VIRTUAL_WIDTH, Settings::VIRTUAL_HEIGHT} };
 	sf::RectangleShape m_choicesBackground{ {Settings::VIRTUAL_WIDTH * 0.6F, Settings::VIRTUAL_HEIGHT * 0.3F} };
 	std::vector<MenuButton> m_buttons{};
@@ -94,7 +94,7 @@ public:
 		m_background.setTexture(&Registry::getTexture("bgmenu"));
 		m_versionText.setPosition({
 			Settings::VIRTUAL_WIDTH - m_versionText.getGlobalBounds().size.x - 8,
-			Settings::VIRTUAL_WIDTH - m_versionText.getGlobalBounds().size.y - 8
+			Settings::VIRTUAL_HEIGHT - m_versionText.getGlobalBounds().size.y - 8 - (m_versionText.getCharacterSize() / 2)
 		});
 		
 		m_choicesBackground.setFillColor(sf::Color(0, 0, 0, 100));

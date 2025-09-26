@@ -14,7 +14,7 @@ class GameScene : public Scene {
 	Card* m_gameCards[Card::CARDS_PER_COLUMN][Card::CARDS_PER_ROW]{};
 	Revealer m_revealer{};
 
-	sf::Text m_nowPlayingText{Registry::getFont(), "nothing", 12u};
+	sf::Text m_nowPlayingText{Registry::getFont(), "nothing", Settings::STANDARD_FONT_SIZE};
 	
 	bool m_gameOver = false;
 	bool m_cardAnimationsFinished = false;
@@ -99,7 +99,7 @@ public:
 			m_nowPlayingText.setString("now playing: \"" + pMsc->title + "\" - " + pMsc->author);
 			m_nowPlayingText.setPosition({
 				8,
-				Settings::VIRTUAL_WIDTH - m_nowPlayingText.getGlobalBounds().size.y - 8
+				Settings::VIRTUAL_HEIGHT - m_nowPlayingText.getGlobalBounds().size.y - 8 - (m_nowPlayingText.getCharacterSize() / 2)
 			});
 		}
 
