@@ -14,7 +14,7 @@ class GameScene : public Scene {
 	Card* m_gameCards[Card::CARDS_PER_COLUMN][Card::CARDS_PER_ROW]{};
 	Revealer m_revealer{};
 
-	sf::Text m_nowPlayingText{Registry::getFont(), "nothing", Settings::STANDARD_FONT_SIZE};
+	sf::Text m_nowPlayingText{Registry::getFont(), "nothing", Settings::SCALED_FONT_SIZE};
 	
 	bool m_gameOver = false;
 	bool m_cardAnimationsFinished = false;

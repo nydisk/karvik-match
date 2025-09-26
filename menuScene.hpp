@@ -27,7 +27,7 @@ private:
 		MenuOption id;
 	};
 
-	sf::Text m_versionText{ Registry::getFont(), Settings::VERSION_STRING, Settings::STANDARD_FONT_SIZE };
+	sf::Text m_versionText{ Registry::getFont(), Settings::VERSION_STRING, Settings::SCALED_FONT_SIZE };
 	sf::RectangleShape m_background{ {Settings::VIRTUAL_WIDTH, Settings::VIRTUAL_HEIGHT} };
 	sf::RectangleShape m_choicesBackground{ {Settings::VIRTUAL_WIDTH * 0.6F, Settings::VIRTUAL_HEIGHT * 0.3F} };
 	std::vector<MenuButton> m_buttons{};
