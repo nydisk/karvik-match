@@ -32,45 +32,50 @@ static void assetLoadError(const std::string& target_id, const std::string& path
 	exit(EXIT_FAILURE);
 }
 
+// TODO: fix the godtier mess that is manual assetLoadError calls
 static void loadRegistry() {
-	if (!Registry::loadTexture("./data/card_back.png", "card_back")) {
-		assetLoadError("card_back", "/data/card_back.png");
+	if (!Registry::loadTexture("data/card_back.png", "card_back")) {
+		assetLoadError("card_back", "data/card_back.png");
 	}
 
-	if (!Registry::loadTexture("./data/splash.png", "splash")) {
-		assetLoadError("splash", "/data/splash.png");
+	if (!Registry::loadTexture("data/splash.png", "splash")) {
+		assetLoadError("splash", "data/splash.png");
 	}
-	if (!Registry::loadTexture("./data/bgmenu.png", "bgmenu")) {
-		assetLoadError("bgmenu", "/data/bgmenu.png");
+	if (!Registry::loadTexture("data/menu/bg.png", "bgmenu")) {
+		assetLoadError("bgmenu", "data/menu/bg.png");
+	}
+
+	if (!Registry::loadTexture("data/menu/btn.png", "menu_btn")) {
+		assetLoadError("menu_btn", "data/menu/btn.png");
 	}
 	
 	const auto cardFronts = Manifest::readManifest("./data/cards.txt");
 	for (const auto& def : cardFronts) {
-		if (!Registry::loadTexture("./data/cards/" + def.path, def.id)) {
-			assetLoadError(def.id, "/data/cards/" + def.path);
+		if (!Registry::loadTexture("data/cards/" + def.path, def.id)) {
+			assetLoadError(def.id, "data/cards/" + def.path);
 		}
 		loadedCards.push_back(def.id);
 	}
 
-	if (!Registry::loadSound("./data/sound/matched.ogg", "matched")) {
-		assetLoadError("matched", "/data/sound/matched.ogg");
+	if (!Registry::loadSound("data/sound/matched.ogg", "matched")) {
+		assetLoadError("matched", "data/sound/matched.ogg");
 	}
-	if (!Registry::loadSound("./data/sound/max_win.ogg", "max_win")) {
-		assetLoadError("max_win", "/data/sound/max_win.ogg");
+	if (!Registry::loadSound("data/sound/max_win.ogg", "max_win")) {
+		assetLoadError("max_win", "data/sound/max_win.ogg");
 	}
-	if (!Registry::loadSound("./data/sound/hover.ogg", "hover")) {
-		assetLoadError("hover", "/data/sound/hover.ogg");
+	if (!Registry::loadSound("data/sound/hover.ogg", "hover")) {
+		assetLoadError("hover", "data/sound/hover.ogg");
 	}
-	if (!Registry::loadSound("./data/sound/splash.ogg", "splashfx")) {
-		assetLoadError("splashfx", "/data/sound/splash.ogg");
-	}
-
-	if (!Registry::loadMusic("./data/sound/katamari.ogg", "katamari", "Fearofdark", "Rolling Down The Street, In My Katamari")) {
-		assetLoadError("katamari", "/data/sound/katamari.ogg");
+	if (!Registry::loadSound("data/sound/splash.ogg", "splashfx")) {
+		assetLoadError("splashfx", "data/sound/splash.ogg");
 	}
 
-	if (!Registry::loadGlobalPosterizationShader("./data/posterize.frag")) {
-		assetLoadError("globalPosterizationShader", "/data/posterize.frag");
+	if (!Registry::loadMusic("data/sound/katamari.ogg", "katamari", "Fearofdark", "Rolling Down The Street, In My Katamari")) {
+		assetLoadError("katamari", "data/sound/katamari.ogg");
+	}
+
+	if (!Registry::loadGlobalPosterizationShader("data/shader/posterize.frag")) {
+		assetLoadError("globalPosterizationShader", "data/shader/posterize.frag");
 	}
 
 	if (!Registry::loadFont("C:/Windows/fonts/arial.ttf")) {

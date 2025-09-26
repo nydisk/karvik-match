@@ -8,16 +8,17 @@
 class MenuScene : public Scene{
 public:
 	static constexpr float BUTTON_PADDING = 8.0F;
-	static constexpr float BUTTON_COUNT = 3.0F;
+	static constexpr float BUTTON_COUNT = 4.0F;
 	static constexpr float TOTAL_PADDING = BUTTON_PADDING * (BUTTON_COUNT + 1);
-	static constexpr sf::Color BUTTON_IDLE_COLOR{ 0,0,0,128 };
-	static constexpr sf::Color BUTTON_HOVER_COLOR{ 48,48,48,200 };
-	static constexpr sf::Color BUTTON_ACTIVE_COLOR{ 0,0,0,255 };
+	static constexpr sf::Color BUTTON_IDLE_COLOR{ 200,200,200,255 };
+	static constexpr sf::Color BUTTON_HOVER_COLOR{ 255,255,255,255 };
+	static constexpr sf::Color BUTTON_ACTIVE_COLOR{ 75,75,75,255 };
 	static constexpr unsigned int BUTTON_MIN_CHAR_SIZE = 12u;
 	static constexpr unsigned int BUTTON_MAX_CHAR_SIZE = 16u;
 private:
 	enum class MenuOption : size_t {
 		Play,
+		Cards,
 		Settings,
 		Exit
 	};
@@ -34,16 +35,21 @@ private:
 
 	void createButton(const std::string& text, const MenuOption idx) {
 		const sf::Vector2f buttonSize{ m_choicesBackground.getSize().x - BUTTON_PADDING * 2, (m_choicesBackground.getSize().y - TOTAL_PADDING) / BUTTON_COUNT };
+		const sf::Vector2f buttonPos{
+			m_choicesBackground.getPosition().x + BUTTON_PADDING,
+			m_choicesBackground.getPosition().y + BUTTON_PADDING + (buttonSize.y + BUTTON_PADDING) * static_cast<float>(idx)
+		};
+		std::cout << "menu: creating button '" << text << "' at index " << static_cast<size_t>(idx)
+			<< " with size " << buttonSize.x << "x" << buttonSize.y
+			<< " at position " << buttonPos.x << ", " << buttonPos.y << std::endl;
 		Button btn{
 			buttonSize,
-			{
-				m_choicesBackground.getPosition().x + BUTTON_PADDING,
-				m_choicesBackground.getPosition().y + BUTTON_PADDING + (buttonSize.y + BUTTON_PADDING) * static_cast<float>(idx)
-			},
+			buttonPos,
 			text,
 			BUTTON_IDLE_COLOR,
 			BUTTON_HOVER_COLOR,
 			BUTTON_ACTIVE_COLOR,
+			"menu_btn",
 			BUTTON_MIN_CHAR_SIZE,
 			BUTTON_MAX_CHAR_SIZE
 		};
@@ -67,6 +73,9 @@ public:
 				case MenuOption::Settings:
 					//Scenery::load(SceneId::Settings);
 					break;
+				case MenuOption::Cards:
+					//Scenery::load(SceneId::Cards);
+					break;
 				case MenuOption::Exit:
 					window.close();
 					break;
@@ -80,13 +89,6 @@ public:
 		for (const auto& btn : m_buttons) {
 			btn.button.draw(target);
 		}
-	}
-	void onSFMLEvent(const std::optional<sf::Event>& ev) override {
-		
-	}
-	void onUnload() override {
-
-		Scene::onUnload();
 	}
 	void onLoad() override {
 		m_background.setTexture(&Registry::getTexture("bgmenu"));
@@ -102,9 +104,14 @@ public:
 		});
 		
 		createButton("play", MenuOption::Play);
+		createButton("cards", MenuOption::Cards);
 		createButton("settings", MenuOption::Settings);
 		createButton("exit to windows", MenuOption::Exit);
 
 		Scene::onLoad();
 	}
+
+	//unused
+	void onUnload() override { Scene::onUnload(); }
+	void onSFMLEvent(const std::optional<sf::Event>& ev) override {}
 };
