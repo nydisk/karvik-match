@@ -10,9 +10,9 @@ public:
 	static constexpr float BUTTON_PADDING = 8.0F;
 	static constexpr float BUTTON_COUNT = 4.0F;
 	static constexpr float TOTAL_PADDING = BUTTON_PADDING * (BUTTON_COUNT + 1);
-	static constexpr sf::Color BUTTON_IDLE_COLOR{ 200,200,200,255 };
+	static constexpr sf::Color BUTTON_IDLE_COLOR{ 255,255,255,255 };
 	static constexpr sf::Color BUTTON_HOVER_COLOR{ 255,255,255,255 };
-	static constexpr sf::Color BUTTON_ACTIVE_COLOR{ 75,75,75,255 };
+	static constexpr sf::Color BUTTON_ACTIVE_COLOR{ 255,255,255,255 };
 	static constexpr unsigned int BUTTON_MIN_CHAR_SIZE = 24u;
 	static constexpr unsigned int BUTTON_MAX_CHAR_SIZE = 96u;
 private:
