@@ -14,7 +14,7 @@ public:
 		m_scenes[id] = factory;
 		std::cout << "scenery: Registered scene factory " << static_cast<int>(id) << std::endl;
 	}
-	inline static void load(const SceneId id) {
+	inline static void load(const SceneId id, const bool instant = false) {
 		if (!m_activeScene) { // first scene edge case
 			auto it = m_scenes.find(id);
 			if (it == m_scenes.end()) throw std::runtime_error("scenery: no scene registered");
@@ -24,20 +24,34 @@ public:
 			return;
 		}
 
-		Transition::fadeOut([id]() {
+		if (instant) {
 			if (m_activeScene) {
 				m_activeScene->onUnload();
 			}
 			auto it = m_scenes.find(id);
-			if (it != m_scenes.end()) {
-				m_activeScene = it->second();
-			}
-			else {
+			if (it == m_scenes.end()) {
 				throw std::runtime_error("scenery: no scene registered");
 			}
-			m_activeScene = m_scenes[id]();
+			m_activeScene = it->second();
 			m_activeScene->onLoad();
-			Transition::fadeIn();
-		});
+			return;
+		}
+		else {
+			Transition::fadeOut([id]() {
+				if (m_activeScene) {
+					m_activeScene->onUnload();
+				}
+				auto it = m_scenes.find(id);
+				if (it != m_scenes.end()) {
+					m_activeScene = it->second();
+				}
+				else {
+					throw std::runtime_error("scenery: no scene registered");
+				}
+				m_activeScene = m_scenes[id]();
+				m_activeScene->onLoad();
+				Transition::fadeIn();
+				});
+		}
 	}
 };

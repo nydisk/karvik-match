@@ -104,41 +104,41 @@ int main(){
 	loadRegistry();
 	loadScenery();
 
-	sf::RenderWindow window(sf::VideoMode({ static_cast<unsigned int>(Settings::VIRTUAL_WIDTH), static_cast<unsigned int>(Settings::VIRTUAL_HEIGHT) }), ":3");
-	sf::RenderTexture renderTarget(window.getSize());
-	sf::RectangleShape renderShape({ static_cast<float>(window.getSize().x), static_cast<float>(window.getSize().y)});
+	Settings::MAIN_WINDOW = std::make_unique<sf::RenderWindow>(sf::VideoMode({ static_cast<unsigned int>(Settings::VIRTUAL_WIDTH), static_cast<unsigned int>(Settings::VIRTUAL_HEIGHT) }), ":3");
+	Settings::MAIN_RENDERTARGET = std::make_unique<sf::RenderTexture>(Settings::MAIN_WINDOW->getSize());
+	Settings::MAIN_RENDERSHAPE = std::make_unique<sf::RectangleShape>(sf::Vector2f{ static_cast<float>(Settings::MAIN_WINDOW->getSize().x), static_cast<float>(Settings::MAIN_WINDOW->getSize().y) });
 
-	Transition::init(window);
+	Transition::init(*Settings::MAIN_WINDOW);
 	Scenery::load(Settings::INITIAL_SCENE);
 
 	sf::Clock deltaClock{};
 	sf::Clock clock{};
 	TimeSnap timeSnap{};
-	while (window.isOpen()) {
+	while (Settings::MAIN_WINDOW->isOpen()) {
 		timeSnap.delta = deltaClock.restart().asSeconds();
 		timeSnap.time = clock.getElapsedTime().asSeconds();
 
-		while (const auto& ev = window.pollEvent()) {
+		while (const auto& ev = Settings::MAIN_WINDOW->pollEvent()) {
 			if (ev->is<sf::Event::Closed>()) {
-				renderShape.setTexture(nullptr);
-				window.close();
+				Settings::MAIN_RENDERSHAPE->setTexture(nullptr);
+				Settings::MAIN_WINDOW->close();
 			}
 			Scenery::active()->onSFMLEvent(ev);
 		}
 
 		BGM::update();
-		Scenery::active()->update(renderTarget, window, timeSnap);
+		Scenery::active()->update(*Settings::MAIN_RENDERTARGET, *Settings::MAIN_WINDOW, timeSnap);
 		Transition::update(timeSnap);
 
-		renderTarget.clear(sf::Color::Black);
-		Scenery::active()->draw(renderTarget, window, timeSnap);
-		Transition::post_draw(renderTarget); // run post draw (transition)
-		renderTarget.display();
+		Settings::MAIN_RENDERTARGET->clear(sf::Color::Black);
+		Scenery::active()->draw(*Settings::MAIN_RENDERTARGET, *Settings::MAIN_WINDOW, timeSnap);
+		Transition::post_draw(*Settings::MAIN_RENDERTARGET); // run post draw (transition)
+		Settings::MAIN_RENDERTARGET->display();
 
-		window.clear(sf::Color::Black);
-		renderShape.setTexture(&renderTarget.getTexture());
-		window.draw(renderShape, sf::RenderStates{&Registry::getGlobalPosterizationShader()});
-		window.display();
+		Settings::MAIN_WINDOW->clear(sf::Color::Black);
+		Settings::MAIN_RENDERSHAPE->setTexture(&(Settings::MAIN_RENDERTARGET->getTexture()));
+		Settings::MAIN_WINDOW->draw(*Settings::MAIN_RENDERSHAPE, sf::RenderStates{&Registry::getGlobalPosterizationShader()});
+		Settings::MAIN_WINDOW->display();
 	}
 	Registry::deathAndDestruction();
 }

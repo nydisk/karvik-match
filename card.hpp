@@ -11,20 +11,20 @@ enum class CardFlipState {
 
 class Card {
 public:
-	static constexpr float CARD_SIZE_FACTOR = (Settings::VIRTUAL_HEIGHT / 512.0f); // relative to 512x512 | assume height priority
-	static constexpr float CARD_WIDTH = 64;
-	static constexpr float REAL_WIDTH = CARD_SIZE_FACTOR * CARD_WIDTH;
-	static constexpr float CARD_HEIGHT = 96;
-	static constexpr float REAL_HEIGHT = CARD_SIZE_FACTOR * CARD_HEIGHT;
-	static constexpr float CARD_FLIP_TIME = 0.135f;
-	static constexpr float CARD_SEPARATION = 8 * CARD_SIZE_FACTOR;
-	static constexpr float CARD_DISAPPEAR_TIME = 0.9f;
-	static constexpr float CARD_DISAPPEAR_DELAY = 0.2f;
-	static constexpr float CARD_HOVER_MULTIPLIER = 1.1f;
-	static constexpr float CARD_TOTAL_DISAPPEAR_DELAY = CARD_FLIP_TIME + CARD_DISAPPEAR_DELAY;
-	static constexpr int CARDS_PER_ROW = 4;
-	static constexpr int CARDS_PER_COLUMN = 4;
-	static constexpr int CARDS_TOTAL = CARDS_PER_COLUMN * CARDS_PER_ROW;
+	inline static const float CARD_SIZE_FACTOR = (Settings::VIRTUAL_HEIGHT / 512.0f); // relative to 512x512 | assume height priority
+	inline static constexpr float CARD_WIDTH = 64;
+	inline static const float REAL_WIDTH = CARD_SIZE_FACTOR * CARD_WIDTH;
+	inline static constexpr float CARD_HEIGHT = 96;
+	inline static const float REAL_HEIGHT = CARD_SIZE_FACTOR * CARD_HEIGHT;
+	inline static constexpr float CARD_FLIP_TIME = 0.135f;
+	inline static const float CARD_SEPARATION = 8 * CARD_SIZE_FACTOR;
+	inline static constexpr float CARD_DISAPPEAR_TIME = 0.9f;
+	inline static constexpr float CARD_DISAPPEAR_DELAY = 0.2f;
+	inline static constexpr float CARD_HOVER_MULTIPLIER = 1.1f;
+	inline static constexpr float CARD_TOTAL_DISAPPEAR_DELAY = CARD_FLIP_TIME + CARD_DISAPPEAR_DELAY;
+	inline static constexpr int CARDS_PER_ROW = 4;
+	inline static constexpr int CARDS_PER_COLUMN = 4;
+	inline static constexpr int CARDS_TOTAL = CARDS_PER_COLUMN * CARDS_PER_ROW;
 private:
 	const sf::Texture& m_unflippedTex;
 	const sf::Texture& m_flippedTex;

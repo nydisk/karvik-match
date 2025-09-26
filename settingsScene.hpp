@@ -5,19 +5,23 @@
 #include "registry.hpp"
 #include "toggleButton.hpp"
 #include "settings.hpp"
+#include <functional>
 #include <SFML/Graphics.hpp>
 
 class SettingsElement {
 protected:
-	inline static constexpr float PADDING = 8.0F * (Settings::VIRTUAL_WIDTH / 1280.0F);
+	inline static float PADDING = 8.0F * (Settings::VIRTUAL_WIDTH / 1280.0F);
 	std::string m_displayText;
 	sf::RectangleShape m_optionBackground;
 	sf::Text m_optionText{ Registry::getFont(), m_displayText, Settings::SCALED_FONT_SIZE };
+	std::string m_identifier;
+	std::function<void(SettingsElement&)> m_onChangeCallback = nullptr;
 public:
-	SettingsElement(const std::string& displayText, const sf::Vector2f& size, const sf::Vector2f& position) :
+	SettingsElement(const std::string& id, const std::string& displayText, const sf::Vector2f& size, const sf::Vector2f& position) :
+		m_identifier(id),
 		m_displayText(displayText),
 		m_optionBackground(size),
-		m_optionText(Registry::getFont(), m_displayText, Settings::SCALED_FONT_SIZE * 1.5F)
+		m_optionText(Registry::getFont(), m_displayText, Settings::SCALED_FONT_SIZE)
 	{
 		m_optionBackground.setPosition(position);
 		m_optionBackground.setFillColor({ 45,45,45,255 });
@@ -31,6 +35,8 @@ public:
 		target.draw(m_optionBackground);
 		target.draw(m_optionText);
 	}
+	const std::string& id() const { return m_identifier; }
+	void setChangeCallback(const std::function<void(SettingsElement&)>& callback) { m_onChangeCallback = callback; }
 };
 
 class DropdownSetting : public SettingsElement {
@@ -47,8 +53,8 @@ class DropdownSetting : public SettingsElement {
 	size_t m_selectedOption = 0;
 
 public:
-	DropdownSetting(const std::string& displayText, const sf::Vector2f& size, const sf::Vector2f& position, const std::vector<std::string>& options, const size_t defaultOption = 0) :
-		SettingsElement(displayText, size, position),
+	DropdownSetting(const std::string& id, const std::string& displayText, const sf::Vector2f& size, const sf::Vector2f& position, const std::vector<std::string>& options, const size_t defaultOption = 0) :
+		SettingsElement(id, displayText, size, position),
 		m_dropdownArrow(
 			{ size.y - (PADDING * 2), size.y - (PADDING * 2) },
 			{ position.x + size.x - (size.y - (PADDING * 2)) - PADDING, position.y + PADDING },
@@ -117,7 +123,7 @@ public:
 			m_optionButtons.push_back(optBtn);
 		}
 
-		m_selectedOptionText.setCharacterSize(static_cast<unsigned int>(Settings::SCALED_FONT_SIZE * 1.25F));
+		m_selectedOptionText.setCharacterSize(static_cast<unsigned int>(Settings::SCALED_FONT_SIZE));
 		m_selectedOptionText.setString(m_options.empty() ? "N/A" : m_options[m_selectedOption]);
 		m_selectedOptionText.setPosition({ m_dropdownArea.getPosition().x + PADDING, m_dropdownArea.getPosition().y + (m_dropdownArea.getSize().y / 2) - (m_selectedOptionText.getGlobalBounds().size.y / 2) - (m_selectedOptionText.getCharacterSize() / 2) });
 	}
@@ -132,6 +138,9 @@ public:
 				if (!m_optionButtons[i].wasClicked()) continue;
 				m_selectedOption = i;
 				m_selectedOptionText.setString(m_options[m_selectedOption]);
+				
+				if (m_onChangeCallback) m_onChangeCallback(*this);
+
 				m_expanded = false;
 			}
 		}
@@ -152,23 +161,25 @@ public:
 		m_dropdownArrow.draw(target);
 	}
 	bool isExpanded() const { return m_expanded; }
+	size_t getSelectedOption() const { return m_selectedOption; }
+	const std::string& getSelectedOptionString() const { return m_options[m_selectedOption]; }
 };
 
 class SettingsScene : public Scene {
-	inline static constexpr float SETTINGS_SCALE_FACTOR = Settings::VIRTUAL_WIDTH / 1280.0F;
+	inline static float SETTINGS_SCALE_FACTOR = Settings::VIRTUAL_WIDTH / 1280.0F;
 
 	inline static constexpr sf::Vector2f CATEGORY_BUTTON_SIZE = { 48.0F,48.0F };
 	inline static constexpr sf::Vector2i CATEGORY_BUTTON_TEXTURE_SIZE = { 15,15 };
 	
-	inline static constexpr float CATEGORY_BUTTON_ADJUSTED_PADDING = 8.0F * SETTINGS_SCALE_FACTOR;
-	inline static constexpr float BACKGROUND_ADJUSTED_PADDING = 48.0F * SETTINGS_SCALE_FACTOR;
-	inline static constexpr sf::Vector2f CATEGORY_BUTTON_ADJUSTED_SIZE = { CATEGORY_BUTTON_SIZE.x * SETTINGS_SCALE_FACTOR, CATEGORY_BUTTON_SIZE.y * SETTINGS_SCALE_FACTOR };
+	inline static float CATEGORY_BUTTON_ADJUSTED_PADDING = 8.0F * SETTINGS_SCALE_FACTOR;
+	inline static float BACKGROUND_ADJUSTED_PADDING = 48.0F * SETTINGS_SCALE_FACTOR;
+	inline static sf::Vector2f CATEGORY_BUTTON_ADJUSTED_SIZE = { CATEGORY_BUTTON_SIZE.x * SETTINGS_SCALE_FACTOR, CATEGORY_BUTTON_SIZE.y * SETTINGS_SCALE_FACTOR };
 
 	inline static constexpr sf::Color IDLE_BUTTON_COLOR{ 255,255,255,255 };
 	inline static constexpr sf::Color HOVER_BUTTON_COLOR{ 200,200,200,255 };
 	inline static constexpr sf::Color ACTIVE_BUTTON_COLOR{ 150,150,150,255 };
 
-	inline static constexpr float SETTINGS_ELEMENT_HEIGHT = 55.0F * SETTINGS_SCALE_FACTOR;
+	inline static float SETTINGS_ELEMENT_HEIGHT = 55.0F * SETTINGS_SCALE_FACTOR;
 
 	enum class SettingsCategoryId : size_t {
 		Graphics,
@@ -178,6 +189,10 @@ class SettingsScene : public Scene {
 	struct CategoryButton {
 		SettingsCategoryId id;
 		ToggleButton button;
+	};
+	struct CategoryElement {
+		SettingsCategoryId category;
+		std::unique_ptr<SettingsElement> element;	
 	};
 
 	std::vector<CategoryButton> m_categories{};
@@ -192,7 +207,7 @@ class SettingsScene : public Scene {
 	Button m_backButton;
 	bool m_returningToMenu = false;
 
-	DropdownSetting* m_test = nullptr;
+	std::vector<CategoryElement> m_elements{};
 
 	void addCategoryButton(const SettingsCategoryId id) {
 		ToggleButton btn{
@@ -236,6 +251,37 @@ class SettingsScene : public Scene {
 			cat.button.setToggled(cat.id == id);
 		}
 	}
+
+	void createGraphicsOptions(const sf::Vector2f& size, const sf::Vector2f& startPos) {
+		// resolution dropdown
+		std::unique_ptr<DropdownSetting> resolutionDropdown = std::make_unique<DropdownSetting>(
+			"resolution",
+			"Resolution",
+			size,
+			startPos,
+			std::vector<std::string>{"768x768","1920x1080","1920x1200","512x512"}
+		);
+		resolutionDropdown->setChangeCallback([](SettingsElement& elem) {
+			DropdownSetting& dropdown = static_cast<DropdownSetting&>(elem);
+			const std::string& selected = dropdown.getSelectedOptionString();
+
+			size_t xpos = selected.find('x');
+			if (xpos == std::string::npos) return;
+
+			std::string widthStr = selected.substr(0, xpos);
+			std::string heightStr = selected.substr(xpos + 1);
+
+			unsigned int width = static_cast<unsigned int>(std::stoi(widthStr));
+			unsigned int height = static_cast<unsigned int>(std::stoi(heightStr));
+
+			Settings::changeResolution({ width, height });
+			Scenery::load(SceneId::Settings, true);
+		});
+		m_elements.emplace_back(
+			SettingsCategoryId::Graphics,
+			std::move(resolutionDropdown)	
+		);
+	}
 public:
 	SettingsScene() : Scene(SceneId::Settings),
 		m_backButton(
@@ -268,7 +314,10 @@ public:
 			m_returningToMenu = true;
 		}
 
-		m_test->update(mousePos);
+		for(auto& setting : m_elements) {
+			if (setting.category != m_currentCategory) continue;
+			setting.element->update(mousePos);
+		}
 	}
 	void draw(sf::RenderTarget& target, sf::RenderWindow& window, const TimeSnap& time) override {
 		target.draw(m_background);
@@ -281,7 +330,10 @@ public:
 		}
 		m_backButton.draw(target);
 
-		m_test->draw(target);
+		for (auto& setting : m_elements) {
+			if (setting.category != m_currentCategory) continue;
+			setting.element->draw(target);
+		}
 	}
 	void onLoad() override {
 		addCategoryButton(SettingsCategoryId::Graphics);
@@ -303,7 +355,10 @@ public:
 		settingsArea.position += { CATEGORY_BUTTON_ADJUSTED_PADDING, CATEGORY_BUTTON_ADJUSTED_PADDING + m_activeCategoryText.getCharacterSize() + CATEGORY_BUTTON_ADJUSTED_PADDING };
 		settingsArea.size -= { CATEGORY_BUTTON_ADJUSTED_PADDING * 2.0F, CATEGORY_BUTTON_ADJUSTED_PADDING * 2.0F + m_activeCategoryText.getCharacterSize() + CATEGORY_BUTTON_ADJUSTED_PADDING };
 
-		m_test = new DropdownSetting("Nut selection", { settingsArea.size.x, SETTINGS_ELEMENT_HEIGHT }, settingsArea.position, {"big nuts", "nuts big", "no nuts"});
+		const sf::Vector2f settingSize = { settingsArea.size.x - (CATEGORY_BUTTON_ADJUSTED_PADDING * 2.0F), SETTINGS_ELEMENT_HEIGHT };
+		const sf::Vector2f settingPos = { settingsArea.position.x + CATEGORY_BUTTON_ADJUSTED_PADDING, settingsArea.position.y };
+
+		createGraphicsOptions(settingSize,settingPos);
 		Scene::onLoad();
 	}
 	void onUnload() override { Scene::onUnload(); }
