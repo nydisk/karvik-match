@@ -1,8 +1,9 @@
 #pragma once
+#include <functional>
 #include <SFML/Graphics.hpp>
 #include "mathhelper.hpp"
 #include "timesnap.hpp"
-#include <functional>
+#include "settings.hpp"
 enum class TransitionState {
 	FadeIn,
 	FadeOut,
@@ -21,11 +22,11 @@ private:
 		return {0,0,0,static_cast<uint8_t>(m_alpha * 255)};
 	}
 public:
-	inline static void init(const sf::RenderWindow& window) {
-		m_shape.setSize(window.getView().getSize());
+	inline static void reloadShape() {
+		m_shape.setSize(sf::Vector2f{Settings::VIRTUAL_WIDTH,Settings::VIRTUAL_HEIGHT});
 		m_shape.setFillColor(sf::Color::Black);
 	}
-	inline static void post_draw(sf::RenderTarget& target) {
+	inline static void postDraw(sf::RenderTarget& target) {
 		if (m_state == TransitionState::Nothing) return;
 		m_shape.setFillColor(getColor());
 		target.draw(m_shape);

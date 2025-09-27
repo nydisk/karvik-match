@@ -133,12 +133,15 @@
     <ClCompile Include="card.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="scene.cpp" />
+    <ClCompile Include="settingsElement.cpp" />
     <ClCompile Include="toggleButton.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bgm.hpp" />
     <ClInclude Include="button.hpp" />
     <ClInclude Include="card.hpp" />
+    <ClInclude Include="config.hpp" />
+    <ClInclude Include="ext\ini.h" />
     <ClInclude Include="gameScene.hpp" />
     <ClInclude Include="manifest.hpp" />
     <ClInclude Include="mathhelper.hpp" />
@@ -149,6 +152,7 @@
     <ClInclude Include="scene.hpp" />
     <ClInclude Include="scenery.hpp" />
     <ClInclude Include="settings.hpp" />
+    <ClInclude Include="settingsElement.hpp" />
     <ClInclude Include="settingsScene.hpp" />
     <ClInclude Include="sfx.hpp" />
     <ClInclude Include="splashScene.hpp" />

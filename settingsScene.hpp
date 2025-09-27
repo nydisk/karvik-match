@@ -1,49 +1,27 @@
 #pragma once
+#include <type_traits>
+#include <functional>
+#include <SFML/Graphics.hpp>
+
 #include "sfx.hpp"
 #include "scene.hpp"
 #include "scenery.hpp"
 #include "registry.hpp"
 #include "toggleButton.hpp"
 #include "settings.hpp"
-#include <functional>
-#include <SFML/Graphics.hpp>
+#include "config.hpp"
 
-class SettingsElement {
-protected:
-	inline static float PADDING = 8.0F * (Settings::VIRTUAL_WIDTH / 1280.0F);
-	std::string m_displayText;
-	sf::RectangleShape m_optionBackground;
-	sf::Text m_optionText{ Registry::getFont(), m_displayText, Settings::SCALED_FONT_SIZE };
-	std::string m_identifier;
-	std::function<void(SettingsElement&)> m_onChangeCallback = nullptr;
-public:
-	SettingsElement(const std::string& id, const std::string& displayText, const sf::Vector2f& size, const sf::Vector2f& position) :
-		m_identifier(id),
-		m_displayText(displayText),
-		m_optionBackground(size),
-		m_optionText(Registry::getFont(), m_displayText, Settings::SCALED_FONT_SIZE)
-	{
-		m_optionBackground.setPosition(position);
-		m_optionBackground.setFillColor({ 45,45,45,255 });
-		m_optionBackground.setOutlineColor({ 255,255,255,69 });
-		m_optionBackground.setOutlineThickness(-2.0F);
+#include "settingsElement.hpp"
 
-		m_optionText.setPosition({position.x + PADDING, position.y + (size.y / 2) - (m_optionText.getGlobalBounds().size.y / 2) - (m_optionText.getCharacterSize() / 2)});
-	}
-	virtual void update(const sf::Vector2f& mousePos) = 0;
-	virtual void draw(sf::RenderTarget& target) {
-		target.draw(m_optionBackground);
-		target.draw(m_optionText);
-	}
-	const std::string& id() const { return m_identifier; }
-	void setChangeCallback(const std::function<void(SettingsElement&)>& callback) { m_onChangeCallback = callback; }
-};
+#undef max
+#undef min
 
 class DropdownSetting : public SettingsElement {
 	std::vector<Button> m_optionButtons{};
 
 	sf::RectangleShape m_dropdownArea{ {} };
 	sf::RectangleShape m_dropdownChoicesArea{ {} };
+	sf::RectangleShape m_scrollBar{ {} };
 
 	Button m_dropdownArrow;
 	sf::Text m_selectedOptionText{ Registry::getFont(), "Selected Option", Settings::SCALED_FONT_SIZE };
@@ -51,7 +29,13 @@ class DropdownSetting : public SettingsElement {
 	bool m_expanded = false;
 	std::vector<std::string> m_options{};
 	size_t m_selectedOption = 0;
+	
+	int m_visibleOptions = 5;
+	int m_scrollOffset = 0;
 
+	void updateScrollOffset(const int difference) {
+		m_scrollOffset = std::clamp(m_scrollOffset + difference, 0, std::max(0, static_cast<int>(m_options.size()) - m_visibleOptions));
+	}
 public:
 	DropdownSetting(const std::string& id, const std::string& displayText, const sf::Vector2f& size, const sf::Vector2f& position, const std::vector<std::string>& options, const size_t defaultOption = 0) :
 		SettingsElement(id, displayText, size, position),
@@ -97,7 +81,7 @@ public:
 		const float choiceHeight = size.y - (PADDING * 2);
 		const float outerPadding = 4.f;
 
-		m_dropdownChoicesArea.setSize({ m_dropdownArea.getSize().x, choiceHeight * static_cast<float>(m_options.size()) + (outerPadding * 2) });
+		m_dropdownChoicesArea.setSize({ m_dropdownArea.getSize().x, choiceHeight * static_cast<float>(m_visibleOptions) + (outerPadding * 2) });
 		m_dropdownChoicesArea.setPosition({ m_dropdownArea.getPosition().x, m_dropdownArea.getPosition().y + m_dropdownArea.getSize().y });
 
 		for (size_t i = 0; i < m_options.size(); ++i) {
@@ -126,6 +110,19 @@ public:
 		m_selectedOptionText.setCharacterSize(static_cast<unsigned int>(Settings::SCALED_FONT_SIZE));
 		m_selectedOptionText.setString(m_options.empty() ? "N/A" : m_options[m_selectedOption]);
 		m_selectedOptionText.setPosition({ m_dropdownArea.getPosition().x + PADDING, m_dropdownArea.getPosition().y + (m_dropdownArea.getSize().y / 2) - (m_selectedOptionText.getGlobalBounds().size.y / 2) - (m_selectedOptionText.getCharacterSize() / 2) });
+	
+		m_type = ElementType::Dropdown;
+
+		const float fullScrollBarHeight = m_dropdownChoicesArea.getSize().y - (outerPadding * 2);
+		const float optionsRatio = static_cast<float>(m_visibleOptions) / static_cast<float>(m_options.size());
+		float scrollHeight = (optionsRatio * fullScrollBarHeight);
+
+		m_scrollBar = sf::RectangleShape{ {outerPadding / 2, scrollHeight} };
+		m_scrollBar.setPosition({
+			m_dropdownChoicesArea.getPosition().x + m_dropdownChoicesArea.getSize().x - m_scrollBar.getSize().x - outerPadding,
+			m_dropdownChoicesArea.getPosition().y + outerPadding
+		});
+		m_scrollBar.setFillColor({ 255,255,255,255 });
 	}
 	void update(const sf::Vector2f& mousePos) override {
 		m_dropdownArrow.update(mousePos);
@@ -134,6 +131,8 @@ public:
 		}
 		if (m_expanded) {
 			for (size_t i = 0; i < m_optionButtons.size(); ++i) {
+				if (i < static_cast<size_t>(m_scrollOffset) || i >= static_cast<size_t>(m_scrollOffset + m_visibleOptions)) continue;
+
 				m_optionButtons[i].update(mousePos);
 				if (!m_optionButtons[i].wasClicked()) continue;
 				m_selectedOption = i;
@@ -153,8 +152,13 @@ public:
 
 		if (m_expanded) {
 			target.draw(m_dropdownChoicesArea);
-			for(const auto& opt : m_optionButtons) {
-				opt.draw(target);
+			for (size_t i = 0; i < m_optionButtons.size(); ++i) {
+				if (i < static_cast<size_t>(m_scrollOffset) || i >= static_cast<size_t>(m_scrollOffset + m_visibleOptions)) continue;
+
+				m_optionButtons[i].draw(target);
+			}
+			if (m_options.size() > static_cast<size_t>(m_visibleOptions)) {
+				target.draw(m_scrollBar);
 			}
 		}
 		
@@ -163,6 +167,25 @@ public:
 	bool isExpanded() const { return m_expanded; }
 	size_t getSelectedOption() const { return m_selectedOption; }
 	const std::string& getSelectedOptionString() const { return m_options[m_selectedOption]; }
+
+	void scroll(const int direction) {
+		const float choiceHeight = m_optionBackground.getSize().y - (PADDING * 2);
+		const float outerPadding = 4.f;
+		updateScrollOffset(direction);
+		// update all button positions
+		for(size_t i = 0; i < m_optionButtons.size(); ++i) {
+			sf::Vector2f btnPos = {
+				m_dropdownChoicesArea.getPosition().x + PADDING,
+				m_dropdownChoicesArea.getPosition().y + outerPadding + (i - m_scrollOffset) * choiceHeight + (PADDING / 2.f)
+			};
+
+			m_optionButtons[i].setPosition(btnPos);
+		}
+		m_scrollBar.setPosition({
+			m_dropdownChoicesArea.getPosition().x + m_dropdownChoicesArea.getSize().x - m_scrollBar.getSize().x - outerPadding,
+			m_dropdownChoicesArea.getPosition().y + outerPadding + (static_cast<float>(m_scrollOffset) / static_cast<float>(m_options.size())) * (m_dropdownChoicesArea.getSize().y - (outerPadding * 2))
+		});
+	}
 };
 
 class SettingsScene : public Scene {
@@ -252,14 +275,59 @@ class SettingsScene : public Scene {
 		}
 	}
 
+	std::string getResolutionString(const sf::Vector2u& res) {
+		return std::to_string(res.x) + "x" + std::to_string(res.y);
+	}
+
 	void createGraphicsOptions(const sf::Vector2f& size, const sf::Vector2f& startPos) {
+		#pragma region Resolution dropdown
+
 		// resolution dropdown
+		std::vector<std::string> resolutions{ "768x768","1920x1080","1920x1200","512x512" };
+		
+		std::vector<sf::VideoMode> modes = sf::VideoMode::getFullscreenModes();
+		for (const auto& mode : modes) {
+			if (mode.size.x < 800 || mode.size.y < 600) continue; // skip some :3
+			const auto rstr = getResolutionString(mode.size);
+			if (std::find(resolutions.begin(), resolutions.end(), rstr) == resolutions.end()) {
+				resolutions.push_back(rstr);
+			}
+		}
+
+		const auto resStr = getResolutionString({ static_cast<unsigned int>(Settings::VIRTUAL_WIDTH),static_cast<unsigned int>(Settings::VIRTUAL_HEIGHT) });
+		if (std::find(resolutions.begin(), resolutions.end(), resStr) == resolutions.end()) {
+			resolutions.push_back(resStr);
+		}
+
+		std::sort(resolutions.begin(), resolutions.end(), [](const std::string& a, const std::string& b) {
+			size_t axpos = a.find('x');
+			size_t bxpos = b.find('x');
+			if (axpos == std::string::npos || bxpos == std::string::npos) return a < b;
+			unsigned int awidth = static_cast<unsigned int>(std::stoi(a.substr(0, axpos)));
+			unsigned int aheight = static_cast<unsigned int>(std::stoi(a.substr(axpos + 1)));
+			unsigned int bwidth = static_cast<unsigned int>(std::stoi(b.substr(0, bxpos)));
+			unsigned int bheight = static_cast<unsigned int>(std::stoi(b.substr(bxpos + 1)));
+			if (awidth == bwidth) {
+				return aheight > bheight;
+			}
+			return awidth > bwidth;
+		});
+		
+		size_t currentResIndex = 0;
+		for (size_t i = 0; i < resolutions.size(); ++i) {
+			if (resolutions[i] == resStr) {
+				currentResIndex = i;
+				break;
+			}
+		}
+		
 		std::unique_ptr<DropdownSetting> resolutionDropdown = std::make_unique<DropdownSetting>(
 			"resolution",
 			"Resolution",
 			size,
 			startPos,
-			std::vector<std::string>{"768x768","1920x1080","1920x1200","512x512"}
+			resolutions,
+			currentResIndex
 		);
 		resolutionDropdown->setChangeCallback([](SettingsElement& elem) {
 			DropdownSetting& dropdown = static_cast<DropdownSetting&>(elem);
@@ -274,13 +342,15 @@ class SettingsScene : public Scene {
 			unsigned int width = static_cast<unsigned int>(std::stoi(widthStr));
 			unsigned int height = static_cast<unsigned int>(std::stoi(heightStr));
 
-			Settings::changeResolution({ width, height });
+			Config::changeResolution({ width, height });
 			Scenery::load(SceneId::Settings, true);
 		});
 		m_elements.emplace_back(
 			SettingsCategoryId::Graphics,
 			std::move(resolutionDropdown)	
 		);
+
+		#pragma endregion
 	}
 public:
 	SettingsScene() : Scene(SceneId::Settings),
@@ -361,6 +431,24 @@ public:
 		createGraphicsOptions(settingSize,settingPos);
 		Scene::onLoad();
 	}
-	void onUnload() override { Scene::onUnload(); }
-	void onSFMLEvent(const std::optional<sf::Event>& ev) override {}
+	void onUnload() override {
+		Config::saveSettings();
+		Scene::onUnload();
+	}
+	void onSFMLEvent(const std::optional<sf::Event>& ev) override {
+		if (const auto& e = ev->getIf<sf::Event::MouseWheelScrolled>()) {
+			for(auto& setting : m_elements) {
+				if (setting.category != m_currentCategory) continue;
+				if (setting.element->type() != SettingsElement::ElementType::Dropdown) continue;
+				DropdownSetting& dropdown = static_cast<DropdownSetting&>(*setting.element);
+				if (!dropdown.isExpanded()) return;
+				if (e->delta > 0) {
+					dropdown.scroll(-1);
+				}
+				else if (e->delta < 0) {
+					dropdown.scroll(1);
+				}
+			}
+		}
+	}
 };

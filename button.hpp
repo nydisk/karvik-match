@@ -23,8 +23,6 @@ private:
 	sf::IntRect m_hoverRect{};
 	sf::IntRect m_activeRect{};
 protected:
-	sf::RectangleShape& getShape();
-	const sf::RectangleShape& getShape() const;
 	bool hasTexture() const;
 	const sf::IntRect& getActiveRect() const;
 	const sf::IntRect& getIdleRect() const;
@@ -38,6 +36,9 @@ public:
 	void update(const sf::Vector2f& mousePos);
 	void draw(sf::RenderTarget& target) const;
 	void setUseHoverImage(const bool useHoverImage);
+	const sf::RectangleShape& getShape() const;
+	sf::RectangleShape& getShape();
+	void setPosition(const sf::Vector2f& position);
 	[[nodiscard]] bool usesHoverImage() const;
 	[[nodiscard]] bool isPressed() const;
 	[[nodiscard]] bool isHovered() const;

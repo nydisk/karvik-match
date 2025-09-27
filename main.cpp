@@ -15,6 +15,7 @@
 #include "menuScene.hpp"
 #include "registry.hpp"
 #include "settings.hpp"
+#include "config.hpp"
 #include "timesnap.hpp"
 #include "manifest.hpp"
 #include "scenery.hpp"
@@ -101,6 +102,8 @@ static void loadScenery() {
 }
 
 int main(){
+	Config::loadSettings();
+
 	loadRegistry();
 	loadScenery();
 
@@ -108,7 +111,7 @@ int main(){
 	Settings::MAIN_RENDERTARGET = std::make_unique<sf::RenderTexture>(Settings::MAIN_WINDOW->getSize());
 	Settings::MAIN_RENDERSHAPE = std::make_unique<sf::RectangleShape>(sf::Vector2f{ static_cast<float>(Settings::MAIN_WINDOW->getSize().x), static_cast<float>(Settings::MAIN_WINDOW->getSize().y) });
 
-	Transition::init(*Settings::MAIN_WINDOW);
+	Transition::reloadShape();
 	Scenery::load(Settings::INITIAL_SCENE);
 
 	sf::Clock deltaClock{};
@@ -132,7 +135,7 @@ int main(){
 
 		Settings::MAIN_RENDERTARGET->clear(sf::Color::Black);
 		Scenery::active()->draw(*Settings::MAIN_RENDERTARGET, *Settings::MAIN_WINDOW, timeSnap);
-		Transition::post_draw(*Settings::MAIN_RENDERTARGET); // run post draw (transition)
+		Transition::postDraw(*Settings::MAIN_RENDERTARGET); // run post draw (transition)
 		Settings::MAIN_RENDERTARGET->display();
 
 		Settings::MAIN_WINDOW->clear(sf::Color::Black);

@@ -105,6 +105,11 @@ bool Button::wasClicked() const { return m_wasActivated; }
 bool Button::wasHovered() const { return m_wasHovered; }
 
 sf::RectangleShape& Button::getShape() { return m_shape; }
+void Button::setPosition(const sf::Vector2f& position){
+	m_shape.setPosition(position);
+	sf::FloatRect textBounds = m_text.getLocalBounds();
+	m_text.setPosition({ position.x + m_shape.getSize().x / 2.0f, position.y + m_shape.getSize().y / 2.0f });
+}
 const sf::RectangleShape& Button::getShape() const { return m_shape; }
 bool Button::hasTexture() const { return m_texture != nullptr; }
 const sf::IntRect& Button::getActiveRect() const { return m_activeRect; }
