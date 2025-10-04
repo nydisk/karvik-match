@@ -1,6 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "registry.hpp"
+#include "core/registry.hpp"
 class Button {
 	sf::RectangleShape m_shape;
 	sf::Text m_text;

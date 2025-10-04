@@ -1,8 +1,8 @@
 #pragma once
 #include <functional>
 #include <SFML/Graphics.hpp>
-#include "settings.hpp"
-#include "registry.hpp"
+#include "core/settings.hpp"
+#include "core/registry.hpp"
 
 class SettingsElement {
 public:

@@ -7,18 +7,23 @@
 #include <vector>
 #include <string>
 #include <math.h>
+
 #include <SFML/Graphics.hpp>
-#include "settingsScene.hpp"
-#include "splashScene.hpp"
-#include "transition.hpp"
-#include "gameScene.hpp"
-#include "menuScene.hpp"
-#include "registry.hpp"
-#include "settings.hpp"
-#include "config.hpp"
-#include "timesnap.hpp"
-#include "manifest.hpp"
-#include "scenery.hpp"
+
+#include "scene/scenes/settingsScene.hpp"
+#include "scene/scenes/splashScene.hpp"
+#include "scene/scenes/gameScene.hpp"
+#include "scene/scenes/menuScene.hpp"
+#include "scene/scenery.hpp"
+
+#include "core/transition.hpp"
+#include "core/registry.hpp"
+#include "core/settings.hpp"
+
+#include "util/config.hpp"
+#include "util/timesnap.hpp"
+
+#include "lua/luacard.hpp"
 
 std::vector<std::string> loadedCards{};
 
@@ -60,10 +65,10 @@ static void loadRegistry() {
 		assetLoadError("category_btn_map", "data/settings/category_btn_map.png");
 	}
 	
-	const auto cardFronts = Manifest::readManifest("./data/cards.txt");
-	for (const auto& def : cardFronts) {
-		if (!Registry::loadTexture("data/cards/" + def.path, def.id)) {
-			assetLoadError(def.id, "data/cards/" + def.path);
+	LuaCard::reload();
+	for (const auto& def : LuaCard::definitions()) {
+		if (!Registry::loadTexture("data/cards/" + def.filename, def.id)) {
+			assetLoadError(def.id, "data/cards/" + def.filename);
 		}
 		loadedCards.push_back(def.id);
 	}
@@ -103,6 +108,7 @@ static void loadScenery() {
 
 int main(){
 	Config::loadSettings();
+	LuaHelper::initialize();
 
 	loadRegistry();
 	loadScenery();

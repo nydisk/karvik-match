@@ -1,8 +1,8 @@
 #pragma once
 #include <string>
 #include <SFML/Graphics.hpp>
-#include "timesnap.hpp"
-#include "settings.hpp"
+#include "util/timesnap.hpp"
+#include "core/settings.hpp"
 
 enum class CardFlipState {
 	FlippingNoFace,

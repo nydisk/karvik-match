@@ -1,5 +1,6 @@
 #include "scene.hpp"
-#include "bgm.hpp"
+#include "sound/bgm.hpp"
+
 Scene::Scene(const SceneId id) : m_id(id) {}
 
 void Scene::onLoad() {

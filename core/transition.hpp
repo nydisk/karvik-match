@@ -1,9 +1,9 @@
 #pragma once
 #include <functional>
 #include <SFML/Graphics.hpp>
-#include "mathhelper.hpp"
-#include "timesnap.hpp"
-#include "settings.hpp"
+#include "util/mathhelper.hpp"
+#include "util/timesnap.hpp"
+#include "core/settings.hpp"
 enum class TransitionState {
 	FadeIn,
 	FadeOut,

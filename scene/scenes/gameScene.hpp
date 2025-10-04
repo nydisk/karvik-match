@@ -1,13 +1,13 @@
 #pragma once
-#include "scenery.hpp"
-#include "revealer.hpp"
-#include "registry.hpp"
-#include "settings.hpp"
-#include "stats.hpp"
-#include "scene.hpp"
-#include "card.hpp"
-#include "rng.hpp"
-#include "bgm.hpp"
+#include "scene/scenery.hpp"
+#include "game/revealer.hpp"
+#include "core/registry.hpp"
+#include "core/settings.hpp"
+#include "game/stats.hpp"
+#include "scene/scene.hpp"
+#include "game/card.hpp"
+#include "util/rng.hpp"
+#include "sound/bgm.hpp"
 
 class GameScene : public Scene {
 	std::vector<std::string> m_chosenCards{};

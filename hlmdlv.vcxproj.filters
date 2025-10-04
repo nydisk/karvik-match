@@ -18,90 +18,93 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="card.cpp">
+    <ClCompile Include="game\card.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="scene.cpp">
+    <ClCompile Include="scene\scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="button.cpp">
+    <ClCompile Include="ui\button.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="toggleButton.cpp">
+    <ClCompile Include="ui\toggleButton.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="settingsElement.cpp">
+    <ClCompile Include="ui\settingsElement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="card.hpp">
+    <ClInclude Include="game\card.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="registry.hpp">
+    <ClInclude Include="core\registry.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="settings.hpp">
+    <ClInclude Include="core\settings.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="revealer.hpp">
+    <ClInclude Include="game\revealer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="timesnap.hpp">
+    <ClInclude Include="util\timesnap.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="manifest.hpp">
+    <ClInclude Include="util\mathhelper.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="mathhelper.hpp">
+    <ClInclude Include="sound\sfx.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="sfx.hpp">
+    <ClInclude Include="scene\scene.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="scene.hpp">
+    <ClInclude Include="scene\scenery.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="scenery.hpp">
+    <ClInclude Include="scene\scenes\gameScene.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="gameScene.hpp">
+    <ClInclude Include="util\rng.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="rng.hpp">
+    <ClInclude Include="scene\scenes\splashScene.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="splashScene.hpp">
+    <ClInclude Include="core\transition.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="transition.hpp">
+    <ClInclude Include="sound\bgm.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="bgm.hpp">
+    <ClInclude Include="game\stats.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="stats.hpp">
+    <ClInclude Include="scene\scenes\menuScene.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="menuScene.hpp">
+    <ClInclude Include="ui\button.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="button.hpp">
+    <ClInclude Include="ui\toggleButton.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="toggleButton.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="settingsScene.hpp">
+    <ClInclude Include="scene\scenes\settingsScene.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ext\ini.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="config.hpp">
+    <ClInclude Include="util\config.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="settingsElement.hpp">
+    <ClInclude Include="ui\settingsElement.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lua\luacard.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lua\luahelper.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

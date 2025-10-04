@@ -1,8 +1,8 @@
 #pragma once
 #include <array>
 #include "card.hpp"
-#include "sfx.hpp"
 #include "stats.hpp"
+#include "sound/sfx.hpp"
 enum class RevealState {
 	First,
 	Second,

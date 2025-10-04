@@ -2,8 +2,8 @@
 #include <SFML/Audio/Music.hpp>
 #include <SFML/Audio/Sound.hpp>
 #include <vector>
-#include "registry.hpp"
-#include "rng.hpp"
+#include "core/registry.hpp"
+#include "util/rng.hpp"
 class BGM {
 	inline static std::vector<RegistryMusicInfo*> m_playlist;
 	inline static size_t m_nowPlaying = 0;

@@ -1,6 +1,6 @@
 #pragma once
 #include <SFML/Audio.hpp>
-#include "registry.hpp"
+#include "core/registry.hpp"
 class SFX {
 public:
 	inline static void play(const std::string& bufferId) {

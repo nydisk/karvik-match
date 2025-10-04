@@ -2,7 +2,7 @@
 #include <unordered_map>
 #include <functional>
 #include "scene.hpp"
-#include "transition.hpp"
+#include "core/transition.hpp"
 class Scenery {
 	inline static std::unordered_map<SceneId, std::function<std::unique_ptr<Scene>()>> m_scenes{};
 	inline static std::unique_ptr<Scene> m_activeScene{};

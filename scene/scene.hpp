@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
 #include <SFML/Graphics/RenderWindow.hpp>
-#include "timesnap.hpp"
+#include "util/timesnap.hpp"
 enum class SceneId : int {
 	Splash,
 	Menu,

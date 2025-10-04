@@ -71,8 +71,9 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <ExternalIncludePath>X:\C++ Libraries\SFML3\include;$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>X:\C++ Libraries\SFML3\lib;$(LibraryPath)</LibraryPath>
+    <ExternalIncludePath>$(ProjectDir)ext\lua\include;X:\C++ Libraries\SFML3\include;$(ExternalIncludePath)</ExternalIncludePath>
+    <LibraryPath>$(ProjectDir)ext\lua\lib;X:\C++ Libraries\SFML3\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -121,45 +122,47 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);SFML_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>sfml-audio-s.lib;sfml-graphics-s.lib;sfml-window-s.lib;sfml-system-s.lib;gdi32.lib;winmm.lib;opengl32.lib;freetype.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sfml-audio-s.lib;sfml-graphics-s.lib;sfml-window-s.lib;sfml-system-s.lib;gdi32.lib;winmm.lib;opengl32.lib;freetype.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;lua54.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="button.cpp" />
-    <ClCompile Include="card.cpp" />
+    <ClCompile Include="ui\button.cpp" />
+    <ClCompile Include="game\card.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="scene.cpp" />
-    <ClCompile Include="settingsElement.cpp" />
-    <ClCompile Include="toggleButton.cpp" />
+    <ClCompile Include="scene\scene.cpp" />
+    <ClCompile Include="ui\settingsElement.cpp" />
+    <ClCompile Include="ui\toggleButton.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="bgm.hpp" />
-    <ClInclude Include="button.hpp" />
-    <ClInclude Include="card.hpp" />
-    <ClInclude Include="config.hpp" />
+    <ClInclude Include="lua\luacard.hpp" />
+    <ClInclude Include="lua\luahelper.hpp" />
+    <ClInclude Include="sound\bgm.hpp" />
+    <ClInclude Include="ui\button.hpp" />
+    <ClInclude Include="game\card.hpp" />
+    <ClInclude Include="util\config.hpp" />
     <ClInclude Include="ext\ini.h" />
-    <ClInclude Include="gameScene.hpp" />
-    <ClInclude Include="manifest.hpp" />
-    <ClInclude Include="mathhelper.hpp" />
-    <ClInclude Include="menuScene.hpp" />
-    <ClInclude Include="registry.hpp" />
-    <ClInclude Include="revealer.hpp" />
-    <ClInclude Include="rng.hpp" />
-    <ClInclude Include="scene.hpp" />
-    <ClInclude Include="scenery.hpp" />
-    <ClInclude Include="settings.hpp" />
-    <ClInclude Include="settingsElement.hpp" />
-    <ClInclude Include="settingsScene.hpp" />
-    <ClInclude Include="sfx.hpp" />
-    <ClInclude Include="splashScene.hpp" />
-    <ClInclude Include="stats.hpp" />
-    <ClInclude Include="timesnap.hpp" />
-    <ClInclude Include="toggleButton.hpp" />
-    <ClInclude Include="transition.hpp" />
+    <ClInclude Include="scene\scenes\gameScene.hpp" />
+    <ClInclude Include="util\mathhelper.hpp" />
+    <ClInclude Include="scene\scenes\menuScene.hpp" />
+    <ClInclude Include="core\registry.hpp" />
+    <ClInclude Include="game\revealer.hpp" />
+    <ClInclude Include="util\rng.hpp" />
+    <ClInclude Include="scene\scene.hpp" />
+    <ClInclude Include="scene\scenery.hpp" />
+    <ClInclude Include="core\settings.hpp" />
+    <ClInclude Include="ui\settingsElement.hpp" />
+    <ClInclude Include="scene\scenes\settingsScene.hpp" />
+    <ClInclude Include="sound\sfx.hpp" />
+    <ClInclude Include="scene\scenes\splashScene.hpp" />
+    <ClInclude Include="game\stats.hpp" />
+    <ClInclude Include="util\timesnap.hpp" />
+    <ClInclude Include="ui\toggleButton.hpp" />
+    <ClInclude Include="core\transition.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

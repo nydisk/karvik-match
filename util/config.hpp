@@ -1,8 +1,8 @@
 #pragma once
-#include "transition.hpp"
-#include "settings.hpp"
+#include "core/transition.hpp"
+#include "core/settings.hpp"
 #include "ext/ini.h"
-#include "registry.hpp"
+#include "core/registry.hpp"
 class Config {
 	inline static int getIntFromINIWithHandling(const mINI::INIStructure& ini, const std::string& cat, const std::string& id, const int defaultValue) {
 		if (!ini.has(cat)) {

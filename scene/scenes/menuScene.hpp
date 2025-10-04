@@ -1,9 +1,9 @@
 #pragma once
-#include "scene.hpp"
-#include "scenery.hpp"
-#include "registry.hpp"
-#include "sfx.hpp"
-#include "button.hpp"
+#include "scene/scene.hpp"
+#include "scene/scenery.hpp"
+#include "core/registry.hpp"
+#include "sound/sfx.hpp"
+#include "ui/button.hpp"
 
 class MenuScene : public Scene{
 public:

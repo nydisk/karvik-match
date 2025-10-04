@@ -1,8 +1,8 @@
 #pragma once
-#include "sfx.hpp"
-#include "scene.hpp"
-#include "scenery.hpp"
-#include "registry.hpp"
+#include "sound/sfx.hpp"
+#include "scene/scene.hpp"
+#include "scene/scenery.hpp"
+#include "core/registry.hpp"
 #include <SFML/Graphics.hpp>
 class SplashScene : public Scene {
 public:

@@ -1,8 +1,8 @@
-#include "sfx.hpp"
+#include "sound/sfx.hpp"
 #include "card.hpp"
-#include "registry.hpp"
-#include "settings.hpp"
-#include "mathhelper.hpp"
+#include "core/registry.hpp"
+#include "core/settings.hpp"
+#include "util/mathhelper.hpp"
 
 [[nodiscard]] float Card::cardSizeFactor() { return Settings::VIRTUAL_HEIGHT / 512.0f; }
 [[nodiscard]] float Card::realWidth() { return cardSizeFactor() * CARD_WIDTH; }

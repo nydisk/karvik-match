@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
 #include <SFML/Graphics.hpp>
-#include "scene.hpp"
+#include "scene/scene.hpp"
 class Settings {
 public:
 	inline static float MASTER_VOLUME = 100.0F;

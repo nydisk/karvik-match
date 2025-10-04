@@ -3,15 +3,14 @@
 #include <functional>
 #include <SFML/Graphics.hpp>
 
-#include "sfx.hpp"
-#include "scene.hpp"
-#include "scenery.hpp"
-#include "registry.hpp"
-#include "toggleButton.hpp"
-#include "settings.hpp"
-#include "config.hpp"
-
-#include "settingsElement.hpp"
+#include "sound/sfx.hpp"
+#include "scene/scene.hpp"
+#include "scene/scenery.hpp"
+#include "core/registry.hpp"
+#include "core/settings.hpp"
+#include "ui/toggleButton.hpp"
+#include "ui/settingsElement.hpp"
+#include "util/config.hpp"
 
 #undef max
 #undef min
