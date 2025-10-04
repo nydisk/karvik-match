@@ -29,7 +29,7 @@ class LuaHelper {
 	};
 public:
 	[[noreturn]] inline static void panicDie(const std::string& msg) {
-		MessageBoxA(nullptr, msg.c_str(), "karvik-match lua_exec", MB_OK);
+		MessageBoxA(nullptr, msg.c_str(), "karvik-match lua_exec", MB_OK | MB_ICONERROR);
 		exit(EXIT_FAILURE);
 	}
 	inline static void initialize() {

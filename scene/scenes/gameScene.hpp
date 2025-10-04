@@ -22,6 +22,9 @@ class GameScene : public Scene {
 	
 	void populateGameCards(const std::vector<std::string>& loaded) {
 		const int uniqueCards = (Card::CARDS_PER_COLUMN * Card::CARDS_PER_ROW) / 2;
+		if (loaded.size() < uniqueCards) {
+			MessageBoxA(nullptr, std::string("error: not enough cards defined. a minimum of " + std::to_string(uniqueCards) + " is required").c_str(), "karvik-match", MB_OK | MB_ICONERROR);
+		}
 		std::vector<std::string> copyOfCards = loaded;
 		for (size_t i = 0; i < uniqueCards; i++) {
 			size_t index = static_cast<size_t>(RNG::random(static_cast<int>(copyOfCards.size()) - 1));

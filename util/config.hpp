@@ -6,11 +6,11 @@
 class Config {
 	inline static int getIntFromINIWithHandling(const mINI::INIStructure& ini, const std::string& cat, const std::string& id, const int defaultValue) {
 		if (!ini.has(cat)) {
-			MessageBoxA(nullptr, std::string("configuration error: category '" + cat + "' does not exist.").c_str(), "karvik-match cfg loader", MB_OK);
+			MessageBoxA(nullptr, std::string("configuration error: category '" + cat + "' does not exist.").c_str(), "karvik-match cfg loader", MB_OK | MB_ICONERROR);
 			return defaultValue;
 		}
 		if (!ini.get(cat).has(id)) {
-			MessageBoxA(nullptr, std::string("configuration error: param '" + id + "' does not exist within category '" + cat + "'.").c_str(), "karvik-match cfg loader", MB_OK);
+			MessageBoxA(nullptr, std::string("configuration error: param '" + id + "' does not exist within category '" + cat + "'.").c_str(), "karvik-match cfg loader", MB_OK | MB_ICONERROR);
 			return defaultValue;
 		}
 		try {
@@ -18,7 +18,7 @@ class Config {
 			return value;
 		}
 		catch (...) {
-			MessageBoxA(nullptr, std::string("configuration error: param '" + id + "' in '" + cat + "' has an invalid datatype (must be int)").c_str(), "karvik-match cfg loader", MB_OK);
+			MessageBoxA(nullptr, std::string("configuration error: param '" + id + "' in '" + cat + "' has an invalid datatype (must be int)").c_str(), "karvik-match cfg loader", MB_OK | MB_ICONERROR);
 			return defaultValue;
 		}
 	}
