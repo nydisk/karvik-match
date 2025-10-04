@@ -318,6 +318,7 @@ class SettingsScene : public Scene {
 			if (std::find(resolutions.begin(), resolutions.end(), rstr) == resolutions.end()) {
 				resolutions.push_back(rstr);
 			}
+			std::cout << "vm " << mode.size.x << "x" << mode.size.y << std::endl;
 		}
 
 		const auto resStr = getResolutionString({ static_cast<unsigned int>(Settings::VIRTUAL_WIDTH),static_cast<unsigned int>(Settings::VIRTUAL_HEIGHT) });
@@ -338,10 +339,12 @@ class SettingsScene : public Scene {
 			}
 			return awidth > bwidth;
 		});
+
 		
 		size_t currentResIndex = 0;
 		for (size_t i = 0; i < resolutions.size(); ++i) {
 			if (resolutions[i] == resStr) {
+				std::cout << "res id: " << currentResIndex << std::endl;
 				currentResIndex = i;
 				break;
 			}
