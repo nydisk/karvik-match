@@ -4,6 +4,17 @@
 #include "scene.hpp"
 class Settings {
 public:
+	inline static float MASTER_VOLUME = 100.0F;
+	inline static float MUSIC_VOLUME = 100.0F;
+	inline static float SFX_VOLUME = 100.0F;
+
+	inline static float getMusicVolume() {
+		return MUSIC_VOLUME * (MASTER_VOLUME / 100.0F);
+	}
+	inline static float getSFXVolume() {
+		return SFX_VOLUME * (MASTER_VOLUME / 100.0F);
+	}
+
 	inline static float VIRTUAL_WIDTH = 1280;
 	inline static float VIRTUAL_HEIGHT = 720;
 	inline static constexpr unsigned int STANDARD_FONT_SIZE = 18u;

@@ -27,6 +27,7 @@ class DropdownSetting : public SettingsElement {
 	sf::Text m_selectedOptionText{ Registry::getFont(), "Selected Option", Settings::SCALED_FONT_SIZE };
 
 	bool m_expanded = false;
+	bool m_justExpanded = false;
 	std::vector<std::string> m_options{};
 	size_t m_selectedOption = 0;
 	
@@ -125,9 +126,13 @@ public:
 		m_scrollBar.setFillColor({ 255,255,255,255 });
 	}
 	void update(const sf::Vector2f& mousePos) override {
+		m_justExpanded = false;
 		m_dropdownArrow.update(mousePos);
 		if (m_dropdownArrow.wasClicked()) {
 			m_expanded = !m_expanded;
+			if (m_expanded) {
+				m_justExpanded = true;
+			}
 		}
 		if (m_expanded) {
 			for (size_t i = 0; i < m_optionButtons.size(); ++i) {
@@ -149,7 +154,10 @@ public:
 		
 		target.draw(m_dropdownArea);
 		target.draw(m_selectedOptionText);
-
+		
+		m_dropdownArrow.draw(target);
+	}
+	void postDraw(sf::RenderTarget& target) {
 		if (m_expanded) {
 			target.draw(m_dropdownChoicesArea);
 			for (size_t i = 0; i < m_optionButtons.size(); ++i) {
@@ -161,12 +169,15 @@ public:
 				target.draw(m_scrollBar);
 			}
 		}
-		
-		m_dropdownArrow.draw(target);
 	}
 	bool isExpanded() const { return m_expanded; }
+	bool justExpanded() const { return m_justExpanded; }
 	size_t getSelectedOption() const { return m_selectedOption; }
 	const std::string& getSelectedOptionString() const { return m_options[m_selectedOption]; }
+
+	void forceExpanded(const bool expanded) {
+		m_expanded = expanded;
+	}
 
 	void scroll(const int direction) {
 		const float choiceHeight = m_optionBackground.getSize().y - (PADDING * 2);
@@ -279,6 +290,21 @@ class SettingsScene : public Scene {
 		return std::to_string(res.x) + "x" + std::to_string(res.y);
 	}
 
+	sf::Vector2f calculateSettingPosition(const sf::Vector2f& size, const sf::Vector2f& startPos, const int index = 0) {
+		return {
+			startPos.x,
+			startPos.y + (static_cast<float>(index) * (size.y + CATEGORY_BUTTON_ADJUSTED_PADDING))
+		};
+	}
+
+	void forceCloseAllDropdowns() {
+		for (const auto& setting : m_elements) {
+			if (setting.element->type() != SettingsElement::ElementType::Dropdown) continue;
+			DropdownSetting& dropdown = static_cast<DropdownSetting&>(*setting.element);
+			if (dropdown.isExpanded()) dropdown.forceExpanded(false);
+		}
+	}
+
 	void createGraphicsOptions(const sf::Vector2f& size, const sf::Vector2f& startPos) {
 		#pragma region Resolution dropdown
 
@@ -352,6 +378,71 @@ class SettingsScene : public Scene {
 
 		#pragma endregion
 	}
+	std::vector<std::string> createRangedDropdown(const int a, const int b, const int step = 5) {
+		int total = std::abs(a - b);
+		int count = total / step;
+
+		if (total % step != 0) {
+			std::cerr << "ranged dropdown generator: warning: total % step != 0" << std::endl;
+		}
+
+		std::vector<std::string> options{};
+		options.reserve(count);
+
+		for (int i = 0; i < (count + 1); i++) {
+			options.push_back(std::to_string(a + (i * step)));
+		}
+
+		return options;
+	}
+	void createAudioOptions(const sf::Vector2f& size, const sf::Vector2f& startPos) {
+		#pragma region Volume dropdowns
+
+		std::unique_ptr<DropdownSetting> masterDropdown = std::make_unique<DropdownSetting>(
+			"audiomaster",
+			"Master volume",
+			size,
+			calculateSettingPosition(size, startPos, 0),
+			createRangedDropdown(0, 100),
+			20
+		);
+		masterDropdown->setChangeCallback([](SettingsElement& elem) {
+			DropdownSetting& dropdown = static_cast<DropdownSetting&>(elem);
+			Config::changeVolume(static_cast<float>(std::stoi(dropdown.getSelectedOptionString())));
+		});
+
+		std::unique_ptr<DropdownSetting> musicDropdown = std::make_unique<DropdownSetting>(
+			"audiomusic",
+			"Music volume",
+			size,
+			calculateSettingPosition(size, startPos, 1),
+			createRangedDropdown(0, 100),
+			20
+		);
+		musicDropdown->setChangeCallback([](SettingsElement& elem) {
+			DropdownSetting& dropdown = static_cast<DropdownSetting&>(elem);
+			Config::changeVolume(-1.0F,static_cast<float>(std::stoi(dropdown.getSelectedOptionString())));
+		});
+
+		std::unique_ptr<DropdownSetting> sfxDropdown = std::make_unique<DropdownSetting>(
+			"audiosfx",
+			"SFX volume",
+			size,
+			calculateSettingPosition(size, startPos, 2),
+			createRangedDropdown(0, 100),
+			20
+		);
+		sfxDropdown->setChangeCallback([](SettingsElement& elem) {
+			DropdownSetting& dropdown = static_cast<DropdownSetting&>(elem);
+			Config::changeVolume(-1.0F,-1.0F,static_cast<float>(std::stoi(dropdown.getSelectedOptionString())));
+		});
+
+		m_elements.emplace_back(SettingsCategoryId::Audio, std::move(masterDropdown));
+		m_elements.emplace_back(SettingsCategoryId::Audio, std::move(musicDropdown));
+		m_elements.emplace_back(SettingsCategoryId::Audio, std::move(sfxDropdown));
+
+		#pragma endregion
+	}
 public:
 	SettingsScene() : Scene(SceneId::Settings),
 		m_backButton(
@@ -387,6 +478,13 @@ public:
 		for(auto& setting : m_elements) {
 			if (setting.category != m_currentCategory) continue;
 			setting.element->update(mousePos);
+			if (setting.element->type() == SettingsElement::ElementType::Dropdown) {
+				DropdownSetting& dropdown = static_cast<DropdownSetting&>(*setting.element);
+				if (dropdown.justExpanded()) {
+					forceCloseAllDropdowns();
+					dropdown.forceExpanded(true);
+				}
+			}
 		}
 	}
 	void draw(sf::RenderTarget& target, sf::RenderWindow& window, const TimeSnap& time) override {
@@ -404,7 +502,15 @@ public:
 			if (setting.category != m_currentCategory) continue;
 			setting.element->draw(target);
 		}
+
+		for (auto& setting : m_elements) {
+			if (setting.category != m_currentCategory) continue;
+			if (setting.element->type() != SettingsElement::ElementType::Dropdown) continue;
+			DropdownSetting& dropdown = static_cast<DropdownSetting&>(*setting.element);
+			dropdown.postDraw(target);
+		}
 	}
+
 	void onLoad() override {
 		addCategoryButton(SettingsCategoryId::Graphics);
 		addCategoryButton(SettingsCategoryId::Audio);
@@ -428,7 +534,8 @@ public:
 		const sf::Vector2f settingSize = { settingsArea.size.x - (CATEGORY_BUTTON_ADJUSTED_PADDING * 2.0F), SETTINGS_ELEMENT_HEIGHT };
 		const sf::Vector2f settingPos = { settingsArea.position.x + CATEGORY_BUTTON_ADJUSTED_PADDING, settingsArea.position.y };
 
-		createGraphicsOptions(settingSize,settingPos);
+		createGraphicsOptions(settingSize, settingPos);
+		createAudioOptions(settingSize, settingPos);
 		Scene::onLoad();
 	}
 	void onUnload() override {
@@ -441,7 +548,7 @@ public:
 				if (setting.category != m_currentCategory) continue;
 				if (setting.element->type() != SettingsElement::ElementType::Dropdown) continue;
 				DropdownSetting& dropdown = static_cast<DropdownSetting&>(*setting.element);
-				if (!dropdown.isExpanded()) return;
+				if (!dropdown.isExpanded()) continue;
 				if (e->delta > 0) {
 					dropdown.scroll(-1);
 				}

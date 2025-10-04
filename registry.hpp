@@ -5,6 +5,7 @@
 #include <vector>
 #include <memory>
 #include <algorithm>
+#include "settings.hpp"
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Shader.hpp>
 #include <SFML/Graphics/Font.hpp>
@@ -29,6 +30,15 @@ private:
 	inline static std::unique_ptr<sf::Shader> m_globalPosterizationShader{};
 	inline static std::unique_ptr<sf::Font> m_globalFont{};
 public:
+	inline static const void updateVolumes() {
+		for (const auto& snd : m_snd) {
+			snd.second->setVolume(Settings::getSFXVolume());
+		}
+		for (const auto& msc : m_msc) {
+			msc.second.pMusic->setVolume(Settings::getMusicVolume());
+		}
+		std::cout << "registry: volume change | SFX " << Settings::getSFXVolume() << " | MSC " << Settings::getMusicVolume() << std::endl;
+	}
 	[[nodiscard]] inline static const sf::Font& getFont() {
 		return *m_globalFont;
 	}
