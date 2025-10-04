@@ -317,7 +317,6 @@ class SettingsScene : public Scene {
 			if (std::find(resolutions.begin(), resolutions.end(), rstr) == resolutions.end()) {
 				resolutions.push_back(rstr);
 			}
-			std::cout << "vm " << mode.size.x << "x" << mode.size.y << std::endl;
 		}
 
 		const auto resStr = getResolutionString({ static_cast<unsigned int>(Settings::VIRTUAL_WIDTH),static_cast<unsigned int>(Settings::VIRTUAL_HEIGHT) });

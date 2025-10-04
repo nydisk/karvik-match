@@ -67,9 +67,6 @@ static void loadRegistry() {
 	
 	LuaCard::reload();
 	for (const auto& def : LuaCard::definitions()) {
-		if (!Registry::loadTexture("data/cards/" + def.filename, def.id)) {
-			assetLoadError(def.id, "data/cards/" + def.filename);
-		}
 		loadedCards.push_back(def.id);
 	}
 
@@ -109,6 +106,7 @@ static void loadScenery() {
 int main(){
 	Config::loadSettings();
 	LuaHelper::initialize();
+	LuaHelper::reloadData();
 
 	loadRegistry();
 	loadScenery();

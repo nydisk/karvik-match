@@ -3,6 +3,7 @@
 #include "core/registry.hpp"
 #include "core/settings.hpp"
 #include "util/mathhelper.hpp"
+#include "lua/luacard.hpp"
 
 [[nodiscard]] float Card::cardSizeFactor() { return Settings::VIRTUAL_HEIGHT / 512.0f; }
 [[nodiscard]] float Card::realWidth() { return cardSizeFactor() * CARD_WIDTH; }
@@ -36,7 +37,7 @@ void Card::updateTexture() {
 	m_shape.setTexture((m_flipped ? &m_flippedTex : &m_unflippedTex), true);
 }
 
-Card::Card(const std::string& id, const sf::Vector2i& gridPos) : m_unflippedTex(Registry::getTexture("card_back")), m_flippedTex(Registry::getTexture(id)), m_id(id) {
+Card::Card(const std::string& id, const sf::Vector2i& gridPos) : m_unflippedTex(Registry::getTexture("card_back")), m_flippedTex(*LuaCard::getCardTexture(id)), m_id(id) {
 	static_assert((CARDS_PER_ROW * CARDS_PER_COLUMN) % 2 == 0, "Total card count must be divisible by 2");
 
 	m_gridPos = gridPos;
