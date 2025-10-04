@@ -15,3 +15,4 @@ tx  cuh      cuh.png
 tx  melon    melon.png
 tx  alien1   alien1.png
 tx  alien2   alien2.png
+tx  compcar  computercar.png
