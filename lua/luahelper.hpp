@@ -7,6 +7,7 @@
 
 enum class LuaDataType {
 	Card,
+	BGM,
 	Other
 };
 
@@ -21,10 +22,12 @@ class LuaHelper {
 
 	inline static const std::unordered_map<std::string, LuaDataType> m_dataTypeDict{
 		{"card", LuaDataType::Card},
+		{"bgm", LuaDataType::BGM},
 		{"other", LuaDataType::Other}
 	};
 	inline static const std::unordered_map<LuaDataType, std::string> m_reverseDataTypeDict{
 		{LuaDataType::Card, "card"},
+		{LuaDataType::BGM, "bgm"},
 		{LuaDataType::Other, "other"}
 	};
 public:

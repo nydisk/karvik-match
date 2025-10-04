@@ -107,5 +107,8 @@
     <ClInclude Include="lua\luahelper.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="lua\luasound.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

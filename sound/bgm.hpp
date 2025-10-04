@@ -29,6 +29,12 @@ public:
 		std::shuffle(m_playlist.begin(), m_playlist.end(), RNG::gen());
 		std::cout << "bgm: shuffled the bgm list" << std::endl;
 	}
+	inline static void queueForThisScene(const SceneId id) {
+		std::cout << "bgm: queueing music for " << static_cast<int>(id) << std::endl;
+		for (const auto& mscid : Registry::getMusicForScene(id)) {
+			queue(mscid);
+		}
+	}
 	inline static void play() {
 		if (m_playlist.empty()) {
 			std::cout << "bgm: no tracks to play :3" << std::endl;

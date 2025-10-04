@@ -7,6 +7,10 @@ Core.data = Core.data or {}
 ---@return nil
 function Core:register_data(list)
     for _, entry in ipairs(list) do
-        self.data[entry.id] = entry
+        if entry.id then
+            self.data[entry.id] = entry
+        else
+            print("lua @ core.lua => warning: skipping data entry with missing id '"..entry.."'")
+        end
     end
 end

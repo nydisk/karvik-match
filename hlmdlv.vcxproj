@@ -141,6 +141,7 @@
   <ItemGroup>
     <ClInclude Include="lua\luacard.hpp" />
     <ClInclude Include="lua\luahelper.hpp" />
+    <ClInclude Include="lua\luasound.hpp" />
     <ClInclude Include="sound\bgm.hpp" />
     <ClInclude Include="ui\button.hpp" />
     <ClInclude Include="game\card.hpp" />

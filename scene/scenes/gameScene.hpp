@@ -144,8 +144,6 @@ public:
 			}
 		}
 
-		BGM::queue("katamari");
-
 		Statistics::reset();
 		Scene::onLoad();
 	}

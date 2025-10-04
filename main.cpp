@@ -24,6 +24,7 @@
 #include "util/timesnap.hpp"
 
 #include "lua/luacard.hpp"
+#include "lua/luasound.hpp"
 
 std::vector<std::string> loadedCards{};
 
@@ -41,6 +42,9 @@ static void assetLoadError(const std::string& target_id, const std::string& path
 
 // TODO: fix the godtier mess that is manual assetLoadError calls
 static void loadRegistry() {
+	LuaCard::reload();
+	LuaSound::reload();
+
 	if (!Registry::loadTexture("data/card_back.png", "card_back")) {
 		assetLoadError("card_back", "data/card_back.png");
 	}
@@ -64,8 +68,7 @@ static void loadRegistry() {
 	if (!Registry::loadTexture("data/settings/category_btn_map.png", "category_btn_map")) {
 		assetLoadError("category_btn_map", "data/settings/category_btn_map.png");
 	}
-	
-	LuaCard::reload();
+
 	for (const auto& def : LuaCard::definitions()) {
 		loadedCards.push_back(def.id);
 	}
@@ -81,10 +84,6 @@ static void loadRegistry() {
 	}
 	if (!Registry::loadSound("data/sound/splash.ogg", "splashfx")) {
 		assetLoadError("splashfx", "data/sound/splash.ogg");
-	}
-
-	if (!Registry::loadMusic("data/sound/katamari.ogg", "katamari", "Fearofdark", "Rolling Down The Street, In My Katamari")) {
-		assetLoadError("katamari", "data/sound/katamari.ogg");
 	}
 
 	if (!Registry::loadGlobalPosterizationShader("data/shader/posterize.frag")) {

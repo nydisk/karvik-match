@@ -17,6 +17,7 @@ struct RegistryMusicInfo {
 	std::unique_ptr<sf::Music> pMusic;
 	std::string author;
 	std::string title;
+	std::vector<SceneId> playsIn;
 };
 
 class Registry {
@@ -77,10 +78,10 @@ public:
 		if (it == m_msc.end()) throw std::out_of_range("msc not found: " + id);
 		return it->second;
 	}
-	[[nodiscard]] inline static bool loadMusic(const std::string& filename, const std::string& id, const std::string& author, const std::string& title) {
+	[[nodiscard]] inline static bool loadMusic(const std::string& filename, const std::string& id, const std::string& author, const std::string& title, const std::vector<SceneId>& playsIn) {
 		std::unique_ptr<sf::Music> msc = std::make_unique<sf::Music>();
 		if (!msc->openFromFile(filename)) return false;
-		m_msc[id] = { std::move(msc), author, title };
+		m_msc[id] = { std::move(msc), author, title, playsIn };
 		std::cout << "registry: loaded music '" << id << "' @ " << filename << " by " << author << " titled '" << title << "'" << std::endl;
 		return true;
 	}
@@ -101,6 +102,20 @@ public:
 		std::cout << "registry: loaded sound '" << id << "' @ " << filename << std::endl;
 		return true;
 	}
+
+	[[nodiscard]] inline static std::vector<std::string> getMusicForScene(const SceneId id) {
+		std::vector<std::string> mscinfo{};
+		for (const auto& msc : m_msc) {
+			if (std::find(msc.second.playsIn.begin(), msc.second.playsIn.end(), id) == msc.second.playsIn.end()) continue;
+			mscinfo.push_back(msc.first);
+		}
+		return mscinfo;
+	}
+
+	inline static void clearMusic() {
+		m_msc.clear();
+	}
+
 	inline static void deathAndDestruction() {
 		m_tex.clear();
 		m_snd.clear();
