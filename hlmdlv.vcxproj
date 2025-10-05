@@ -71,8 +71,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <ExternalIncludePath>$(ProjectDir)ext\lua\include;X:\C++ Libraries\SFML3\include;$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>$(ProjectDir)ext\lua\lib;X:\C++ Libraries\SFML3\lib;$(LibraryPath)</LibraryPath>
+    <ExternalIncludePath>$(ProjectDir)ext\lua\include;C:\users\matti\Documents\SFML3\include;$(ExternalIncludePath)</ExternalIncludePath>
+    <LibraryPath>$(ProjectDir)ext\lua\lib;C:\users\matti\Documents\SFML3\lib;$(LibraryPath)</LibraryPath>
     <IncludePath>$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

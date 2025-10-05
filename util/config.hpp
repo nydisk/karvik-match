@@ -3,6 +3,7 @@
 #include "core/settings.hpp"
 #include "ext/ini.h"
 #include "core/registry.hpp"
+#include <SFML/Graphics.hpp>
 class Config {
 	inline static int getIntFromINIWithHandling(const mINI::INIStructure& ini, const std::string& cat, const std::string& id, const int defaultValue) {
 		if (!ini.has(cat)) {
@@ -23,7 +24,7 @@ class Config {
 		}
 	}
 public:
-	inline static void changeResolution(const sf::Vector2u& newSize) {
+	inline static void changeResolution(const sf::Vector2u& newSize, const bool fullscreen) {
 		if (Settings::MAIN_WINDOW == nullptr) return;
 		if (Settings::MAIN_RENDERTARGET == nullptr) return;
 		if (Settings::MAIN_RENDERSHAPE == nullptr) return;
@@ -32,7 +33,7 @@ public:
 		Settings::VIRTUAL_HEIGHT = static_cast<float>(newSize.y);
 
 		Settings::SCALED_FONT_SIZE = static_cast<unsigned int>((Settings::VIRTUAL_HEIGHT / 512.0F) * Settings::STANDARD_FONT_SIZE);
-		Settings::MAIN_WINDOW = std::make_unique<sf::RenderWindow>(sf::VideoMode(newSize), ":3");
+		Settings::MAIN_WINDOW = std::make_unique<sf::RenderWindow>(sf::VideoMode(newSize), ":3", fullscreen ? sf::Style::None : sf::Style::Default);
 
 		Settings::MAIN_RENDERTARGET = std::make_unique<sf::RenderTexture>(Settings::MAIN_WINDOW->getSize());
 		Settings::MAIN_RENDERSHAPE = std::make_unique<sf::RectangleShape>(sf::Vector2f{ static_cast<float>(Settings::MAIN_WINDOW->getSize().x), static_cast<float>(Settings::MAIN_WINDOW->getSize().y) });
@@ -53,6 +54,7 @@ public:
 
 		ini["graphics"]["width"] = std::to_string(static_cast<int>(Settings::VIRTUAL_WIDTH));
 		ini["graphics"]["height"] = std::to_string(static_cast<int>(Settings::VIRTUAL_HEIGHT));
+		ini["graphics"]["fullscreen"] = std::to_string(static_cast<int>(Settings::IS_FULLSCREEN));
 
 		ini["audio"]["master"] = std::to_string(static_cast<int>(Settings::MASTER_VOLUME));
 		ini["audio"]["music"] = std::to_string(static_cast<int>(Settings::MUSIC_VOLUME));
@@ -71,6 +73,7 @@ public:
 
 		Settings::VIRTUAL_WIDTH = static_cast<float>(getIntFromINIWithHandling(ini, "graphics", "width", 512));
 		Settings::VIRTUAL_HEIGHT = static_cast<float>(getIntFromINIWithHandling(ini, "graphics", "height", 512));
+		Settings::IS_FULLSCREEN = static_cast<bool>(getIntFromINIWithHandling(ini, "graphics", "fullscreen", 0));
 
 		Settings::MASTER_VOLUME = static_cast<float>(std::clamp(getIntFromINIWithHandling(ini, "audio", "master", 100), 0, 100));
 		Settings::MUSIC_VOLUME = static_cast<float>(std::clamp(getIntFromINIWithHandling(ini, "audio", "music", 100), 0, 100));

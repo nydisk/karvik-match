@@ -17,6 +17,7 @@ public:
 
 	inline static float VIRTUAL_WIDTH = 1280;
 	inline static float VIRTUAL_HEIGHT = 720;
+	inline static bool IS_FULLSCREEN = false;
 	inline static constexpr unsigned int STANDARD_FONT_SIZE = 18u;
 
 	// 512 is the height of the reference resolution for the font size

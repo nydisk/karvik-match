@@ -110,7 +110,7 @@ int main(){
 	loadRegistry();
 	loadScenery();
 
-	Settings::MAIN_WINDOW = std::make_unique<sf::RenderWindow>(sf::VideoMode({ static_cast<unsigned int>(Settings::VIRTUAL_WIDTH), static_cast<unsigned int>(Settings::VIRTUAL_HEIGHT) }), ":3");
+	Settings::MAIN_WINDOW = std::make_unique<sf::RenderWindow>(sf::VideoMode({ static_cast<unsigned int>(Settings::VIRTUAL_WIDTH), static_cast<unsigned int>(Settings::VIRTUAL_HEIGHT) }), ":3", Settings::IS_FULLSCREEN ? sf::Style::None : sf::Style::Default);
 	Settings::MAIN_RENDERTARGET = std::make_unique<sf::RenderTexture>(Settings::MAIN_WINDOW->getSize());
 	Settings::MAIN_RENDERSHAPE = std::make_unique<sf::RectangleShape>(sf::Vector2f{ static_cast<float>(Settings::MAIN_WINDOW->getSize().x), static_cast<float>(Settings::MAIN_WINDOW->getSize().y) });
 

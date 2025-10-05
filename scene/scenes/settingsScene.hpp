@@ -51,6 +51,7 @@ public:
 		m_selectedOption(defaultOption)
 	{
 		m_options = options;
+		m_visibleOptions = std::min(5, static_cast<int>(m_options.size()));
 
 		m_dropdownArrow.forceRects(
 			{ {0,0}, {16,16} },
@@ -308,7 +309,7 @@ class SettingsScene : public Scene {
 		#pragma region Resolution dropdown
 
 		// resolution dropdown
-		std::vector<std::string> resolutions{ "768x768","1920x1080","1920x1200","512x512" };
+		std::vector<std::string> resolutions{ "768x768","512x512" };
 		
 		std::vector<sf::VideoMode> modes = sf::VideoMode::getFullscreenModes();
 		for (const auto& mode : modes) {
@@ -369,12 +370,37 @@ class SettingsScene : public Scene {
 			unsigned int width = static_cast<unsigned int>(std::stoi(widthStr));
 			unsigned int height = static_cast<unsigned int>(std::stoi(heightStr));
 
-			Config::changeResolution({ width, height });
+			Config::changeResolution({ width, height }, Settings::IS_FULLSCREEN);
 			Scenery::load(SceneId::Settings, true);
 		});
 		m_elements.emplace_back(
 			SettingsCategoryId::Graphics,
 			std::move(resolutionDropdown)	
+		);
+
+		std::unique_ptr<DropdownSetting> fullscreenDropdown = std::make_unique<DropdownSetting>(
+			"fullscreen",
+			"Fullscreen",
+			size,
+			calculateSettingPosition(size, startPos, 1),
+			std::vector<std::string>{
+				"yes",
+				"no"
+			},
+			Settings::IS_FULLSCREEN ? 0 : 1
+		);
+		fullscreenDropdown->setChangeCallback([](SettingsElement& elem) {
+			DropdownSetting& dropdown = static_cast<DropdownSetting&>(elem);
+			const std::string& selected = dropdown.getSelectedOptionString();
+
+			bool fs = selected == "yes";
+			Settings::IS_FULLSCREEN = fs;
+			Config::changeResolution({static_cast<unsigned int>(Settings::VIRTUAL_WIDTH),static_cast<unsigned int>(Settings::VIRTUAL_HEIGHT)}, fs);
+			Scenery::load(SceneId::Settings, true);
+		});
+		m_elements.emplace_back(
+			SettingsCategoryId::Graphics,
+			std::move(fullscreenDropdown)
 		);
 
 		#pragma endregion
@@ -548,8 +574,10 @@ public:
 			for(auto& setting : m_elements) {
 				if (setting.category != m_currentCategory) continue;
 				if (setting.element->type() != SettingsElement::ElementType::Dropdown) continue;
+
 				DropdownSetting& dropdown = static_cast<DropdownSetting&>(*setting.element);
 				if (!dropdown.isExpanded()) continue;
+
 				if (e->delta > 0) {
 					dropdown.scroll(-1);
 				}
