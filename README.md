@@ -1,5 +1,5 @@
 # Karvik match
-a simple memory game
+a simple memory game, serves its purpose, but there is nothing I can think of adding
 
 ## Libraries used
  - SFML
