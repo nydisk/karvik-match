@@ -3,6 +3,9 @@
 #include "game/game_ctx.hpp"
 #include "scene/scene_registry.hpp"
 #include "scenedefs/splash_scene.hpp"
+#include "scenedefs/game_scene.hpp"
+
+class GameScene;
 
 void initializeAssets(AssetRegistry& registry);
 void initializeScenes(SceneRegistry& registry);
@@ -43,6 +46,7 @@ void initializeAssets(AssetRegistry& registry) {
 }
 
 void initializeScenes(SceneRegistry& registry) {
-	registry.registerFactory(SceneId::Splash, [](GameContext& ctx){ return std::make_unique<SplashScene>(ctx); });
+	registry.registerSimpleFactory<SplashScene>(SceneId::Splash);
+	registry.registerSimpleFactory<GameScene>(SceneId::Game);
 	spdlog::info("finished initializing scenes");
 }

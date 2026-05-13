@@ -14,6 +14,8 @@ set(SOURCE_FILES src/main.cpp
         src/game/game_ctx.hpp
         src/scenedefs/splash_scene.cpp
         src/scenedefs/splash_scene.hpp
+        src/scenedefs/game_scene.cpp
+        src/scenedefs/game_scene.hpp
 )
 
 add_executable(karvikmatch ${SOURCE_FILES})
