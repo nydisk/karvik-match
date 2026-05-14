@@ -10,7 +10,10 @@ SceneId SplashScene::id() { return SceneId::Splash; }
 
 void SplashScene::load() {
     splashTex_ = ctx_.assets.load<TextureAsset>("splash", "splash.png");
-    sourceRect_ = Rectangle(0, 0, splashTex_->tex().width, splashTex_->tex().height);
+    sourceRect_ = Rectangle(0, 0,
+        static_cast<float>(splashTex_->tex().width),
+        static_cast<float>(splashTex_->tex().height)
+    );
 }
 
 void SplashScene::unload() {
@@ -39,5 +42,12 @@ void SplashScene::update() {
 }
 
 void SplashScene::render() {
-    DrawTexturePro(splashTex_->tex(), sourceRect_, Rectangle(0, 0, GetRenderWidth(), GetRenderHeight()), Vector2Zeros, 0.0f, Fade(WHITE, alpha_));
+    DrawTexturePro(
+        splashTex_->tex(),
+        sourceRect_,
+        Rectangle(0, 0, static_cast<float>(GetRenderWidth()), static_cast<float>(GetRenderHeight())),
+        Vector2Zeros,
+        0.0f,
+        Fade(WHITE, alpha_)
+    );
 }
