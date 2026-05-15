@@ -1,11 +1,17 @@
-import "core" for Core
+import "core" for Core, Card
 
-Core.registerCard("alien1", "alien1.png")
-Core.registerCard("alien2", "alien2.png")
-Core.registerCard("computer-car", "computer-car.png")
-Core.registerCard("cuh", "cuh.png")
-Core.registerCard("karvik1", "karvik1.png")
-Core.registerCard("karvik2", "karvik2.png")
-Core.registerCard("karvik3", "karvik3.png")
-Core.registerCard("karvik4", "karvik4.png")
-Core.registerCard("melon", "melon.png")
+var cards = {
+    "alien1":       Card.new("alien1", "alien1.png"),
+    "alien2":       Card.new("alien2", "alien2.png"),
+    "computer-car": Card.new("computer-car", "computer-car.png"),
+    "cuh":          Card.new("cuh", "cuh.png"),
+    "karvik1":      Card.new("karvik1", "karvik1.png"),
+    "karvik2":      Card.new("karvik2", "karvik2.png"),
+    "karvik3":      Card.new("karvik3", "karvik3.png"),
+    "karvik4":      Card.new("karvik4", "karvik4.png"),
+    "melon":        Card.new("melon", "melon.png")
+}
+
+for (card in cards.values) {
+    Core.registerCard(card)
+}

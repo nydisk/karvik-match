@@ -44,7 +44,7 @@ WrenVM* WrenImporter::initializeWren(WrenConfiguration& config) {
     config.writeFn = [](WrenVM*, const char* text) { spdlog::info("[wren] {}", text); };
     config.errorFn = [](WrenVM*, WrenErrorType, const char* module, int line, const char* msg) { spdlog::error("[wren] {}:{} {}", module ? module : "?", line, msg); };
     config.bindForeignMethodFn = [](WrenVM*, const char*, const char* className, bool, const char* signature) -> WrenForeignMethodFn {
-        if (strcmp(className, "Core") == 0 && strcmp(signature, "registerCard(_,_)") == 0)
+        if (strcmp(className, "Core") == 0 && strcmp(signature, "f_registerCard(_,_)") == 0)
             return wrenRegisterCard;
         return nullptr;
     };
