@@ -10,7 +10,9 @@ DataRegistry::DataRegistry(AssetRegistry& assets): assets_(assets) {}
 
 void DataRegistry::registerCard(const std::string& id, const std::string& path) {
     assets_.load<TextureAsset>("card_" + id, "cards/" + path);
-    cards_[id] = CardDefinition{id, path};
+    const CardDefinition def {id, path};
+    cards_[id] = def;
+    cardVec_.push_back(def.id);
     spdlog::debug("registered card {}", id);
 }
 
@@ -26,3 +28,11 @@ void DataRegistry::unloadCards() {
 }
 
 size_t DataRegistry::cardCount() const { return cards_.size(); }
+
+const std::unordered_map<std::string, CardDefinition>& DataRegistry::cards() const {
+    return cards_;
+}
+
+const std::vector<std::string>& DataRegistry::cardVec() const {
+    return cardVec_;
+}

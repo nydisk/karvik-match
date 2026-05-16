@@ -8,4 +8,6 @@ struct GameContext {
     AssetRegistry& assets;
     SceneRegistry& scenes;
     DataRegistry& data;
+
+    int rw, rh;
 };

@@ -1,4 +1,5 @@
 #include "raylib.h"
+#include "raymath.h"
 #include "asset/asset_registry.hpp"
 #include "asset/data_registry.hpp"
 #include "asset/wren_importer.hpp"
@@ -11,12 +12,21 @@ void initializeAssets(AssetRegistry& registry);
 void initializeScenes(SceneRegistry& registry);
 
 int main(){
-	//spdlog::set_level(spdlog::level::debug);
+	spdlog::set_level(spdlog::level::debug);
 
 	SetTraceLogLevel(LOG_WARNING);
 	SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-	InitWindow(1280, 720, "karvikmatch");
+	InitWindow(960, 540, "karvikmatch");
+	SetExitKey(0);
 
+	constexpr float upscale = 1.0f;
+
+	RenderTexture2D rtex = LoadRenderTexture(
+		GetRenderWidth(),
+		GetRenderHeight()
+	);
+	SetTextureFilter(rtex.texture, TEXTURE_FILTER_POINT);
+	
 	const WrenImporter wren{};
 
 	AssetRegistry assets{};
@@ -25,7 +35,13 @@ int main(){
 	DataRegistry data(assets);
 	wrenSetUserData(wren.vm(), &data);
 
-	GameContext ctx{assets,scenes,data};
+	GameContext ctx{
+		assets,
+		scenes,
+		data,
+		GetRenderWidth(),
+		GetRenderHeight()
+	};
 
 	initializeAssets(assets);
 	wren.interpretWrenFile("cards", "cards.wren");
@@ -36,12 +52,38 @@ int main(){
 	scenes.loadIfQueued(ctx);
 
 	while (!WindowShouldClose()) {
+		if (IsWindowResized()) {
+			UnloadRenderTexture(rtex);
+			rtex = LoadRenderTexture(
+				GetRenderWidth(),
+				GetRenderHeight()
+			);
+			ctx.rw = rtex.texture.width;
+			ctx.rh = rtex.texture.height;
+			SetTextureFilter(rtex.texture, TEXTURE_FILTER_POINT);
+		}
+
 		Scene* scene = scenes.getCurrentScene();
 		if (scene) scene->update();
 
-		BeginDrawing();
+		BeginTextureMode(rtex);
 		ClearBackground(BLACK);
 		if (scene) scene->render();
+		EndTextureMode();
+
+		BeginDrawing();
+		ClearBackground(BLACK);
+		DrawTexturePro(
+			rtex.texture,
+			Rectangle(0, 0,
+				static_cast<float>(rtex.texture.width),
+				-static_cast<float>(rtex.texture.height)
+			),
+			Rectangle(0, 0,
+				static_cast<float>(GetRenderWidth()),
+				static_cast<float>(GetRenderHeight())
+			), Vector2Zeros, 0.0f, WHITE
+		);
 		EndDrawing();
 
 		scenes.loadIfQueued(ctx);

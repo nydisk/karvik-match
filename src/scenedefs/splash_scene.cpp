@@ -21,6 +21,8 @@ void SplashScene::unload() {
 }
 
 void SplashScene::update() {
+    if (IsKeyPressed(KEY_ESCAPE)) timer_ = 9999;
+
     timer_ += GetFrameTime();
 
     if (timer_ <= SplashFade) {
@@ -45,7 +47,7 @@ void SplashScene::render() {
     DrawTexturePro(
         splashTex_->tex(),
         sourceRect_,
-        Rectangle(0, 0, static_cast<float>(GetRenderWidth()), static_cast<float>(GetRenderHeight())),
+        Rectangle(0, 0, static_cast<float>(ctx_.rw), static_cast<float>(ctx_.rh)),
         Vector2Zeros,
         0.0f,
         Fade(WHITE, alpha_)

@@ -20,6 +20,8 @@ set(SOURCE_FILES src/main.cpp
         src/asset/wren_importer.hpp
         src/asset/data_registry.cpp
         src/asset/data_registry.hpp
+        src/game/card.cpp
+        src/game/card.hpp
 )
 
 file(GLOB WREN_SRC ext/wren/src/vm/*.c)
