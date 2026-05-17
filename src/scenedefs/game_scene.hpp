@@ -3,6 +3,7 @@
 #include <memory>
 
 #include "../game/card.hpp"
+#include "../game/resolver.hpp"
 #include "../scene/scene.hpp"
 
 struct GameContext;
@@ -12,6 +13,7 @@ public:
     static constexpr int GridCY = 4;
 private:
     std::array<std::unique_ptr<Card>, GridCX * GridCY> cards_{};
+    Resolver resolver_{};
 public:
     explicit GameScene(GameContext& ctx);
 

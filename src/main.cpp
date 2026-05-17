@@ -19,8 +19,6 @@ int main(){
 	InitWindow(960, 540, "karvikmatch");
 	SetExitKey(0);
 
-	constexpr float upscale = 1.0f;
-
 	RenderTexture2D rtex = LoadRenderTexture(
 		GetRenderWidth(),
 		GetRenderHeight()
@@ -90,6 +88,8 @@ int main(){
 	}
 
 	wren.free();
+	UnloadRenderTexture(rtex);
+	CloseWindow();
 }
 
 void initializeAssets(AssetRegistry& registry) {

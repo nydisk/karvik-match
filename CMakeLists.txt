@@ -22,6 +22,8 @@ set(SOURCE_FILES src/main.cpp
         src/asset/data_registry.hpp
         src/game/card.cpp
         src/game/card.hpp
+        src/game/resolver.cpp
+        src/game/resolver.hpp
 )
 
 file(GLOB WREN_SRC ext/wren/src/vm/*.c)

@@ -4,6 +4,7 @@
 #include <random>
 #include <string>
 
+#include "../asset/asset_registry.hpp"
 #include "../asset/data_registry.hpp"
 #include "../game/game_ctx.hpp"
 #include "spdlog/spdlog.h"
@@ -39,13 +40,15 @@ void GameScene::load() {
 
     std::ranges::shuffle(spawnedQueue, gen);
 
+    Texture2D& backTex = ctx_.assets.load<TextureAsset>("cardback", "card_back.png")->tex();
+
     Vector2 gs = getCardAreaStart(ctx_.rw, ctx_.rh);
     for (int y = 0; y < GridCX; y++) {
         for (int x = 0; x < GridCY; x++) {
             const std::string& id = spawnedQueue.front();
 
             auto card = std::make_unique<Card>(gs, x, y, id);
-            card->initializeContent(ctx_.assets);
+            card->initializeContent(ctx_.assets, backTex);
 
             cards_[y * GridCX + x] = std::move(card);
 
@@ -59,13 +62,20 @@ void GameScene::unload() {
 }
 
 void GameScene::update() {
-    if (IsWindowResized()) {
-        for (const auto& card : cards_) card->updateGridStart(getCardAreaStart(ctx_.rw, ctx_.rh));
+    for (const auto& card : cards_) {
+        if (IsWindowResized()) {
+            card->updateGridStart(getCardAreaStart(ctx_.rw, ctx_.rh));
+        }
+        card->update(ctx_.rh);
+
+        if (card->hovered() && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+            resolver_.cardClicked(card.get());
+        }
     }
 }
 
 void GameScene::render() {
-    for (const auto& card : cards_) card->render(ctx_.rh);
+    for (const auto& card : cards_) card->render();
 }
 
 Vector2 GameScene::getCardAreaStart(const int rw, const int rh) {
