@@ -40,9 +40,11 @@ public:
     static float getCardHeight(int rh);
     static float getCardWidth(int rh);
 
-    std::string id() const;
-    bool hovered() const;
-    void setState(CardState state);
+    [[nodiscard]] std::string id() const;
+    [[nodiscard]] bool hovered() const;
+
+    void flip();
+    void unflip();
 private:
     [[nodiscard]] Vector2 getRenderPosition(int rh) const;
 };

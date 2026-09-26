@@ -14,5 +14,5 @@ class Resolver {
 public:
     Resolver();
 
-    ResolveResult cardClicked(Card* card);
+    void cardClicked(Card* card);
 };

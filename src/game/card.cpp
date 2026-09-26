@@ -46,8 +46,12 @@ bool Card::hovered() const {
     return hovered_;
 }
 
-void Card::setState(const CardState state) {
-    this->state_ = state;
+void Card::unflip() {
+    state_ = CardState::Back;
+}
+
+void Card::flip() {
+    state_ = CardState::Front;
 }
 
 Vector2 Card::getRenderPosition(const int rh) const {

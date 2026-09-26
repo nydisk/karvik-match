@@ -11,7 +11,7 @@ public:
     void interpretWrenFile(const std::string& module, const std::string& path) const;
 
     void free() const;
-    WrenVM* vm() const;
+    [[nodiscard]] WrenVM* vm() const;
 
     static void wrenRegisterCard(WrenVM* vm);
 
